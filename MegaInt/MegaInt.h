@@ -73,10 +73,10 @@ char NumberToChar(const int n)
 	RetunChar='0'+n%10;
 	return RetunChar;
 }
-template <typename T>
-T IntSize(T n)
+
+unsigned long long IntSize(unsigned long long n)
 {
-    T length=1;
+	unsigned long long length=1;
     while(n>=10)
     {
         length++;

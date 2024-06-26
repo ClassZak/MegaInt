@@ -184,12 +184,12 @@ MegaInt MegaInt::MegaIntModyl()
 	}
 }
 
-unsigned long long MegaInt::GetSize()
+unsigned long long MegaInt::GetSize() const
 {
 	return length;
 }
 
-unsigned long long MegaInt::GetWeight()
+unsigned long long MegaInt::GetWeight() const
 {
 	return length*sizeof(numbers[0])+sizeof(MegaInt);
 }
@@ -320,10 +320,9 @@ short MegaInt::GetDigitRate(unsigned long long n,unsigned long long i)//Uses in 
 	short result=((n/PowerTen(i))%10);
     return result;
 }
-template <typename T>
-T MegaInt::IntSize(T n)//Get size to allocate the memory
+unsigned long long MegaInt::IntSize(unsigned long long n)//Get size to allocate the memory
 {
-    T length=1;
+	unsigned long long length=1;
     while(n>=10)
     {
         length++;
@@ -356,8 +355,11 @@ bool MegaInt::IsRoundDigit(const unsigned long long StartPos)
 }
 unsigned long long MegaInt::NumberOfLastNulls()
 {
+	if (!length)
+		return 0;
+
 	unsigned long long nulls=0;
-	for(unsigned long long i=length-1;i>=0;i--)
+	for(unsigned long long i=length-1;i!=0 or i!=0xFFFFFFFFFFFFFFFF;i--)
 	{
 		if(numbers[i]!=0)
 		break;
@@ -369,6 +371,9 @@ unsigned long long MegaInt::NumberOfLastNulls()
 
 void MegaInt::ExpUpDate()
 {
+	if (!length)
+		return;
+
 	unsigned long long _ExpPos=0;
 	for(unsigned long long i=length-1;i>=0;i++)
 	{

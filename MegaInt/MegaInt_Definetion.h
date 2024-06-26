@@ -12,15 +12,16 @@ public:
 	friend std::istream& operator>>(std::istream &in,const MegaInt &MI);
 //Static field
 private:
-    unsigned long long length,ExpPos,ExpLength,NumbersAreVisible;
+    unsigned long long length,ExpPos,ExpLength,NumbersAreVisible=0;
     short *numbers;
     bool negative,Exponential,IsPrefix;
 //Constructors
 public:
     MegaInt();
     MegaInt(const MegaInt &other);
-    template <typename T>
-    MegaInt(T n);
+    MegaInt(long long n);
+	MegaInt(std::string& InputString);
+	MegaInt(std::string InputString);
 //Destructor
     ~MegaInt();
 //Operators
@@ -108,8 +109,8 @@ public:
     MegaInt MegaIntModyl();
     std::string GetStringRecord();
 	
-	unsigned long long GetSize();
-	unsigned long long GetWeight();
+	unsigned long long GetSize() const;
+	unsigned long long GetWeight() const;
 	//////////////////////////////////////////////////////////////
 	void PushBack(const short n);
 	void PopBack();
@@ -167,7 +168,7 @@ public:
 #ifdef DEBUG
 			std::cout << "numbers:" << String << '|' << std::endl;
 #endif
-			for (unsigned long long i = 0 + result.negative; i < String.length(); i++)
+			for (unsigned long long i = static_cast<unsigned long long>(0) + result.negative; i < String.length(); i++)
 			{
 				result.numbers[i - result.negative] = short(String[i]) - short('0');
 #ifdef DEBUG
@@ -179,9 +180,6 @@ public:
 	}
 private:
 //Friend methods
-	friend void SetNewDigitRate();
-    friend void EareseDigitRate();
-	friend MegaInt StringToMegaInt(const std::string &InputString);
 //Static variables
 	static unsigned long long constructed;
 	static unsigned long long destructed;
@@ -192,12 +190,10 @@ private:
     void EareseDigitRate();
 
     void ExpUpDate();
-    void PrefixUpDate();
 	bool IsRoundDigit(const unsigned long long StartPos=0);
 	
     short GetDigitRate(unsigned long long n,unsigned long long i);
-	template <typename T>
-    T IntSize(T n);
+	unsigned long long IntSize(unsigned long long n);
     template <typename T>
     T PowerTen(T n);
 };

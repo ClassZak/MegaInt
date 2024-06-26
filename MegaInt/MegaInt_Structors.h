@@ -1,3 +1,4 @@
+#include "MegaInt_Definetion.h"
 #ifndef MEGAINT_STRUCTORS_H
 #define MEGAINT_STRUCTORS_H
 MegaInt::MegaInt()
@@ -26,14 +27,14 @@ MegaInt::MegaInt(const MegaInt &other)
     Exponential=false;
     IsPrefix=false;
 }
-template <typename T>
-MegaInt::MegaInt(T n)
+
+MegaInt::MegaInt(long long n)
 {
     (n>=0) ? negative=false : negative=true;
     n=modyl(n);
     length=IntSize(n);
     numbers=new short[length];
-    for(T i=0;i<length;i++)
+    for(unsigned long long i=0;i<length;i++)
     numbers[i]=short(GetDigitRate(n, length-i-1));
     #ifdef MEGAINT_DEBUG
     std::cout<<"construction with number"<<this<<std::endl;
@@ -42,8 +43,12 @@ MegaInt::MegaInt(T n)
     Exponential=false;
     IsPrefix=false;
 }
-template <>
+
 MegaInt::MegaInt(std::string &InputString):MegaInt()
+{
+	*this=StringToMegaInt(InputString);
+}
+MegaInt::MegaInt(std::string InputString):MegaInt()
 {
 	*this=StringToMegaInt(InputString);
 }
