@@ -1,8 +1,11 @@
 #ifndef MEGAINT_H
 #define MEGAINT_H
+
+
 #include <string>
 #include <iostream>
 #include <typeinfo>
+#include <windows.h>
 //#define MEGAINT_DEBUG
 #ifndef MAX_SIGNED_CHAR
 #define MAX_SIGNED_CHAR 127
@@ -13,8 +16,11 @@
 #ifndef MAX_UNSIGNED_CHAR
 #define MAX_UNSIGNED_CHAR 255
 #endif
+#ifndef MIN_CHAR
+#define MIN_CHAR -128
+#endif
 #ifndef MAX_CHAR
-#define MAX_CHAR 255
+#define MAX_CHAR 127
 #endif
 #ifndef MAX_SHORT
 #define MAX_SHORT 32767
@@ -52,52 +58,380 @@
 #ifndef MAX_UNSIGNED_LONG_LONG
 #define MAX_UNSIGNED_LONG_LONG 18446744073709551615
 #endif
+
+#ifndef MAX_LIMIT_MEGAINT 
+#define MAX_LIMIT_MEGAINT		1000000000000000000
+#endif
+#ifndef MAX_LIMIT_RATE_MEGAINT 
+#define MAX_LIMIT_RATE_MEGAINT IntSize(MAX_LIMIT_MEGAINT)-1
+#endif
+
 class MegaInt;
-#include "MegaInt_Definetion.h"
+
 template <typename T>
-T modyl(T n)
+T IntSize(T n);
+
+#include "MegaInt_Definetion.h"
+#include "MegInt_Exception.h"
+template <typename T>
+T CutNumber(T n,const short newsize);
+
+
+long long modyl(long long n);
+
+unsigned long long len(const MegaInt &n);
+
+char NumberToChar(const int n);
+
+unsigned long long GetCharArrayLength(const char* array);
+
+void CharArrayPushBack(char*& array,char last);
+
+char* CharConcat(char* first,char *second);
+
+void CharArrayPushBack(const char*& array,char last);
+
+char* CharConcat(const char* first,char *second);
+
+char* CharConcat(const char* first,const char *second);
+
+char* CharConcat(char* first,const char *second);
+
+unsigned long long find_in_chars(char* array,char element);
+
+unsigned long long find_in_chars(char* array,unsigned long long length,char element);
+
+unsigned long long PowerTen(unsigned long long n);
+
+short GetDigitRate(unsigned long long n,unsigned long long i);
+
+template <typename T>
+std::string to_string(T n);
+
+template <typename T>
+char* to_char_pointer(T n);
+
+char* StringToCharPoint(const std::string &String);
+
+template <typename T>
+bool IsRound(const T n);
+
+
+
+
+template <typename T>
+T CutNumber(T n,const short newsize)
 {
-    return (n*(-1*(n<0)+(n>=0)));
+	T returnnumber=0;
+	for(short i=0;i<newsize;i++)
+	{
+		T curr=((T)(n/PowerTen(i))%10);
+		if(!i)
+		returnnumber=n%10;
+		else
+		returnnumber+=((T)(n/PowerTen(i))%10)*PowerTen(i);
+	}
+	return returnnumber;
 }
-unsigned long long len(MegaInt &n)
+
+long long modyl(long long n)
+{
+	if(n>=0)
+	return n;
+	else
+	return -n;
+}
+unsigned long long len(const MegaInt &n)
 {
 	return n.GetSize();
 }
 char NumberToChar(const int n)
 {
-	char RetunChar=' ';
-	
+	char RetunChar='0';
 	if(n>=0 and n<10)
-	RetunChar='0'+n;
+	RetunChar+=n;
 	else
-	RetunChar='0'+n%10;
+	RetunChar+=n%10;
 	return RetunChar;
 }
 
-unsigned long long IntSize(unsigned long long n)
+unsigned long long GetCharArrayLength(const char* array)
 {
-	unsigned long long length=1;
-    while(n>=10)
-    {
-        length++;
-        n=n/10;
-    }
-    return length;
+	if(array==NULL)
+	{
+		throw std::exception();
+		return 0;
+	}
+	else
+	{
+		unsigned long long length=0;
+		for(unsigned long long i=0;array[i]!='\0';++i)
+		++length;
+		#ifdef DEBUG
+		std::cout<<"len="<<length<<std::endl;
+		#endif
+		return length;
+	}
+}
+void CharArrayPushBack(char*& array,char last)
+{
+	unsigned long long arraylength=GetCharArrayLength(array);
+	if(!arraylength)
+	{
+		delete array;
+		array=new char[2];
+		array[0]=last;
+		array[1]='\0';
+	}
+	else
+	{
+		char* result=new char[arraylength+2];
+		for(unsigned long long i=0;i<arraylength;++i)
+		{
+			result[i]=array[i];
+		}
+		result[arraylength]=last;
+		result[arraylength+1]='\0';
+		
+		delete [] array;
+		array=result;
+	}
+}
+void CharArrayPushBack(const char*& array,char last)
+{
+	unsigned long long arraylength=GetCharArrayLength(array);
+	if(!arraylength)
+	{
+		delete array;
+		char *result=new char[2];
+		result[0]=last;
+		result[1]='\0';
+		return;
+	}
+	else
+	{
+		char* result=new char[arraylength+2];
+		for(unsigned long long i=0;i<arraylength;++i)
+		{
+			result[i]=array[i];
+		}
+		result[arraylength]=last;
+		result[arraylength+1]='\0';
+		return;
+	}
+}
+char* CharConcat(char* first,char *second)
+{
+	if((first==NULL)and(second==NULL))
+	{
+		throw std::exception();
+		char* ch=NULL;
+		return ch;
+	}
+	else if((first==NULL)or(second==NULL))
+	{
+		if(first!=NULL)
+		{
+			char* result=first;
+			return result;
+		}
+		else
+		{
+			char* result=second;
+			return result;
+		}
+	}
+	else
+	{
+		char* result;
+		unsigned long long 
+		firstlength=GetCharArrayLength(first),
+		secondlength=GetCharArrayLength(second),	
+		newlength=firstlength+secondlength;
+		
+		
+		result=new char[newlength+1];
+		for(unsigned long long i=0;i<firstlength;++i)
+		result[i]=first[i];
+		
+		for(unsigned long long i=0;i<secondlength;++i)
+		result[i+firstlength]=second[i];
+		result[newlength]='\0';
+		
+
+		return result;	
+	}
+}
+char* CharConcat(const char* first,char *second)
+{
+	if((first==NULL)and(second==NULL))
+	{
+		throw std::exception();
+		char* ch=NULL;
+		return ch;
+	}
+	else if((first==NULL)or(second==NULL))
+	{
+		if(first!=NULL)
+		{
+			char* result=(char*)first;
+			return result;
+		}
+		else
+		{
+			char* result=second;
+			return result;
+		}
+	}
+	else
+	{
+		char* result;
+		unsigned long long 
+		firstlength=GetCharArrayLength(first),
+		secondlength=GetCharArrayLength(second),	
+		newlength=firstlength+secondlength;
+		
+		
+		result=new char[newlength+1];
+		for(unsigned long long i=0;i<firstlength;++i)
+		result[i]=first[i];
+		
+		for(unsigned long long i=0;i<secondlength;++i)
+		result[i+firstlength]=second[i];
+		result[newlength]='\0';
+		
+		delete [] second;
+		return result;	
+	}
+}
+char* CharConcat(char* first,const char *second)
+{
+	if((first==NULL)and(second==NULL))
+	{
+		throw std::exception();
+		char* ch=NULL;
+		return ch;
+	}
+	else if((first==NULL)or(second==NULL))
+	{
+		if(first!=NULL)
+		{
+			char* result=(char*)first;
+			return result;
+		}
+		else
+		{
+			char* result=(char*)second;
+			return result;
+		}
+	}
+	else
+	{
+		char* result;
+		unsigned long long 
+		firstlength=GetCharArrayLength(first),
+		secondlength=GetCharArrayLength(second),	
+		newlength=firstlength+secondlength;
+		
+		
+		result=new char[newlength+1];
+		for(unsigned long long i=0;i<firstlength;++i)
+		result[i]=first[i];
+		
+		for(unsigned long long i=0;i<secondlength;++i)
+		result[i+firstlength]=second[i];
+		result[newlength]='\0';
+		
+		delete [] first;
+		return result;	
+	}
+}
+char* CharConcat(const char* first,const char *second)
+{
+	if((first==NULL)and(second==NULL))
+	{
+		throw std::exception();
+		char* ch=NULL;
+		return ch;
+	}
+	else if((first==NULL)or(second==NULL))
+	{
+		if(first!=NULL)
+		{
+			char* result=(char*)first;
+			return result;
+		}
+		else
+		{
+			char* result=(char*)second;
+			return result;
+		}
+	}
+	else
+	{
+		char* result;
+		unsigned long long 
+		firstlength=GetCharArrayLength(first),
+		secondlength=GetCharArrayLength(second),	
+		newlength=firstlength+secondlength;
+		
+		
+		result=new char[newlength+1];
+		for(unsigned long long i=0;i<firstlength;++i)
+		result[i]=first[i];
+		
+		for(unsigned long long i=0;i<secondlength;++i)
+		result[i+firstlength]=second[i];
+		result[newlength]='\0';
+		
+		return result;	
+	}
+}
+unsigned long long find_in_chars(char* array,char element)
+{
+	unsigned long long length=GetCharArrayLength(array);
+	for(unsigned long long i=0;i<length;++i)
+	if(array[i]==element)
+	return i;
+	return 0;
+}
+unsigned long long find_in_chars(char* array,unsigned long long length,char element)
+{
+	for(unsigned long long i=0;i<length;++i)
+	if(array[i]==element)
+	return i;
+	return 0;
 }
 template <typename T>
-T PowerTen(T n)
+T IntSize(T n)
 {
-    if(n==0)
-    return 1;
-    else if(n==1)
-    return 10;
-    else
-    return 10*PowerTen(n-1);
+	T length=1;
+	while(n>=10)
+	{
+		if(length==MAX_UNSIGNED_LONG_LONG)
+		throw MegaInt::MegaIntException("Length is more then max");
+		length++;
+		n=(unsigned long long)n/10;
+	}
+	return length;
+}
+unsigned long long PowerTen(unsigned long long n)
+{
+	if(n==MAX_LIMIT_RATE_MEGAINT-1)
+	return (unsigned long long)MAX_LIMIT_MEGAINT/10;
+	if(n==MAX_LIMIT_RATE_MEGAINT)
+	return (unsigned long long)MAX_LIMIT_MEGAINT;
+	if(n==0)
+	return 1;
+	else if(n==1)
+	return 10;
+	else
+	return 10*PowerTen(n-1);
 }
 short GetDigitRate(unsigned long long n,unsigned long long i)
 {
 	short result=((n/PowerTen(i))%10);
-    return result;
+	return result;
 }
 template <typename T>
 std::string to_string(T n)
@@ -109,6 +443,49 @@ std::string to_string(T n)
 	OutputString+=(NumberToChar(GetDigitRate(n,size-i-1)));
 	
 	return OutputString;
+}
+template <typename T>
+char* to_char_pointer(T n)
+{
+	char* OutputString=NULL;
+	unsigned long long size=IntSize(n);
+	
+	OutputString=new char[size+1];
+	for(int i=0;i<size;i++)
+	OutputString[i]=NumberToChar(GetDigitRate(n,size-i-1));
+	OutputString[size]='\0';
+	
+	return OutputString;
+}
+char* StringToCharPoint(const std::string &String)
+{
+	unsigned long long newlength=String.length()+1;
+	char *array=new char[newlength];
+	
+	for(unsigned long long i=0;i<newlength-1;i++)
+	{
+		array[i]=String[i];
+	}
+	array[newlength-1]='\0';
+	
+	return array;
+}
+
+template <typename T>
+bool IsRound(const T n)
+{
+	bool round=false;
+	for(short i=0;i<=19;++i)
+	{
+		if(modyl(n)==PowerTen(i))
+		{
+			round=true;
+			break;
+		}
+		if(PowerTen(i)>modyl(n))
+		break;
+	}
+	return round;
 }
 
 #include "MegaInt_Structors.h"

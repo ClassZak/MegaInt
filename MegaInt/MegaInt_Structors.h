@@ -1,68 +1,205 @@
-#include "MegaInt_Definetion.h"
 #ifndef MEGAINT_STRUCTORS_H
 #define MEGAINT_STRUCTORS_H
 MegaInt::MegaInt()
 {
-    #ifdef MEGAINT_DEBUG
-    std::cout<<"construction "<<this<<std::endl;
-    #endif
-    length=0;
-    numbers=NULL;
-    negative=false;
-    constructed++;
-    Exponential=false;
-    IsPrefix=false;
+	length=1;
+	numbers=new unsigned long long[1];
+	numbers[0]=0;
+	negative=false;
+	constructed++;
 }
 MegaInt::MegaInt(const MegaInt &other)
 {
-    this->negative=other.negative;
-    this->length=other.length;
-    numbers=new short[length];
-    for(unsigned long long i=0;i<length;i++)
-    this->numbers[i]=other.numbers[i];
-    #ifdef MEGAINT_DEBUG
-    std::cout<<"copyright construction "<<this<<std::endl;
-    #endif
-    constructed++;
-    Exponential=false;
-    IsPrefix=false;
+	this->negative=other.negative;
+	this->length=other.length;
+	numbers=new unsigned long long[length];
+	for(unsigned long long i=0;i<length;i++)
+	this->numbers[i]=other.numbers[i];
+	constructed++;
 }
-
-MegaInt::MegaInt(long long n)
+template <typename T>
+MegaInt::MegaInt(const T n)
 {
-    (n>=0) ? negative=false : negative=true;
-    n=modyl(n);
-    length=IntSize(n);
-    numbers=new short[length];
-    for(unsigned long long i=0;i<length;i++)
-    numbers[i]=short(GetDigitRate(n, length-i-1));
-    #ifdef MEGAINT_DEBUG
-    std::cout<<"construction with number"<<this<<std::endl;
-    #endif
-    constructed++;
-    Exponential=false;
-    IsPrefix=false;
+	T nmodyl=modyl(n);
+	
+	(n<0) ? negative=true : negative=false;
+	length=1;
+	numbers=new unsigned long long[length];
+	numbers[0]=nmodyl;
+	
+	if(nmodyl>=MAX_LIMIT_MEGAINT)
+	{
+		++length;
+		unsigned long long *newnumbers=new unsigned long long[length];
+		newnumbers[1]=CutNumber((unsigned long long)nmodyl,MAX_LIMIT_RATE_MEGAINT);
+		newnumbers[0]=(nmodyl)/PowerTen(MAX_LIMIT_RATE_MEGAINT);
+		delete [] numbers;
+		numbers=newnumbers;
+	}
+	constructed++;
 }
-
-MegaInt::MegaInt(std::string &InputString):MegaInt()
+MegaInt::MegaInt(char* InputString) : MegaInt::MegaInt()
 {
-	*this=StringToMegaInt(InputString);
+	*this=(long long)0;
+	char* array = (char*)"";
+	unsigned long long newlength=0;
+	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
+	{
+		if((InputString[i]>='0' and InputString[i]<='9') or ((!newlength)and(InputString[i]=='-')))
+		{
+			if(InputString[i]=='0')
+			{
+				if(newlength>2)
+				{
+					CharArrayPushBack(array,'0');
+					++newlength;
+				}
+				else
+				{
+					if((newlength-(array[0]=='-'))>=1)
+					{
+						CharArrayPushBack(array,'0');
+						++newlength;
+					}	
+				}
+			}
+			else
+			{
+				CharArrayPushBack(array,InputString[i]);
+				++newlength;
+			}
+		}
+	}
+	
+	unsigned long long lastlength=newlength;
+	if(array[0]=='-')
+	{
+		negative=true;
+		--lastlength;
+		char *newarray=new char[lastlength+1];
+		for(unsigned long long i=0;i<lastlength;++i)
+		newarray[i]=array[i+1];
+		newarray[lastlength]='\0';
+		
+		delete[]array;
+		array=newarray;
+	}
+	if(array=="")
+	{
+		negative=false;
+	}
+	else
+	{
+		newlength=(unsigned long long)lastlength/(unsigned long long)(MAX_LIMIT_RATE_MEGAINT)
+		+bool(((lastlength%(MAX_LIMIT_RATE_MEGAINT))!=0)or(lastlength<MAX_LIMIT_RATE_MEGAINT));
+		if(!(newlength))
+		{
+		}
+		else
+		{
+			unsigned long long *newnumbers=new unsigned long long[newlength];
+			for(unsigned long long i=0;i<newlength;++i)
+			{
+				unsigned long long curr=0;
+				for(unsigned long long j=0;j<MAX_LIMIT_RATE_MEGAINT;++j)
+				{
+					if((lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i)==MAX_UNSIGNED_LONG_LONG)
+					break;
+					curr+=(unsigned long long)((short)(array[lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i]-'0'))
+					*PowerTen(j);
+				}
+				newnumbers[newlength-i-1]=curr;
+			}
+			length=newlength;
+			delete numbers;
+			numbers=newnumbers;
+		}
+	}
 }
-MegaInt::MegaInt(std::string InputString):MegaInt()
+MegaInt::MegaInt(const char* InputString) : MegaInt::MegaInt()
 {
-	*this=StringToMegaInt(InputString);
+	*this=(long long)0;
+	char* array = (char*)"";
+	unsigned long long newlength=0;
+	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
+	{
+		if((InputString[i]>='0' and InputString[i]<='9') or ((!newlength)and(InputString[i]=='-')))
+		{
+			if(InputString[i]=='0')
+			{
+				if(newlength>2)
+				{
+					CharArrayPushBack(array,'0');
+					++newlength;
+				}
+				else
+				{
+					if((newlength-(array[0]=='-'))>=1)
+					{
+						CharArrayPushBack(array,'0');
+						++newlength;
+					}	
+				}
+			}
+			else
+			{
+				CharArrayPushBack(array,InputString[i]);
+				++newlength;
+			}
+		}
+	}
+	unsigned long long lastlength=newlength;
+	if(array[0]=='-')
+	{
+		negative=true;
+		--lastlength;
+		char *newarray=new char[lastlength+1];
+		for(unsigned long long i=0;i<lastlength;++i)
+		newarray[i]=array[i+1];
+		newarray[lastlength]='\0';
+		
+		delete[]array;
+		array=newarray;
+	}
+	if(array=="")
+	{
+		negative=false;
+	}
+	else
+	{
+		newlength=(unsigned long long)lastlength/(unsigned long long)(MAX_LIMIT_RATE_MEGAINT)
+		+bool(((lastlength%(MAX_LIMIT_RATE_MEGAINT))!=0)or(lastlength<MAX_LIMIT_RATE_MEGAINT));
+		if(!(newlength))
+		{
+		}
+		else
+		{
+			unsigned long long *newnumbers=new unsigned long long[newlength];
+			for(unsigned long long i=0;i<newlength;++i)
+			{
+				unsigned long long curr=0;
+				for(unsigned long long j=0;j<MAX_LIMIT_RATE_MEGAINT;++j)
+				{
+					if((lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i)==MAX_UNSIGNED_LONG_LONG)
+					break;
+					curr+=(unsigned long long)((short)(array[lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i]-'0'))
+					*PowerTen(j);
+				}
+				newnumbers[newlength-i-1]=curr;
+			}
+			length=newlength;
+			delete numbers;
+			numbers=newnumbers;
+		}
+	}
 }
 //Destructor
 MegaInt::~MegaInt()
-{
-    #ifdef MEGAINT_DEBUG
-    std::cout<<"destruction "<<this<<std::endl;
-    #endif
-//  this->Print(1);    
-    if(numbers!=NULL)
-    delete [] numbers;
-    numbers=NULL;
+{	
+	if(numbers!=NULL)
+	delete [] numbers;
+	numbers=NULL;
 	length=0;
-    destructed++;
+	destructed++;
 }
 #endif

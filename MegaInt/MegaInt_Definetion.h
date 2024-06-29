@@ -3,211 +3,166 @@
 #include <string>
 #include <iostream>
 #include <ostream>
+#include <exception>
+
+#ifndef MAX_LIMIT_MEGAINT 
+#define MAX_LIMIT_MEGAINT		 100000000000000000
+#endif
+#ifndef MAX_LIMIT_RATE_MEGAINT 
+#define MAX_LIMIT_RATE_MEGAINT IntSize(MAX_LIMIT_MEGAINT)-1
+#endif
+
+
 class MegaInt
 {
+//Inner classes
+public:
 //Friend functions and methods
 public:
-	friend unsigned long long len(MegaInt &n);
+	friend unsigned long long len(const MegaInt &n);
 	friend std::ostream& operator<<(std::ostream &os,const MegaInt &MI);
 	friend std::istream& operator>>(std::istream &in,const MegaInt &MI);
-//Static field
+	
+	class MegaIntException:public std::exception
+	{
+	public:
+		MegaInt* numbers;
+		unsigned long long count;
+		char* reason;
+		MegaIntException(MegaInt* m,char* reason,const unsigned long long count=1);
+		MegaIntException(MegaInt* m,const char* reason,const unsigned long long count=1);
+		MegaIntException(char* reason);
+		MegaIntException(const char* reason);
+		int what();
+	};
+//Private field
 private:
-    unsigned long long length,ExpPos,ExpLength,NumbersAreVisible=0;
-    short *numbers;
-    bool negative,Exponential,IsPrefix;
+	unsigned long long length;
+	unsigned long long *numbers;
+	bool negative;
 //Constructors
 public:
-    MegaInt();
-    MegaInt(const MegaInt &other);
-    MegaInt(long long n);
-	MegaInt(std::string& InputString);
-	MegaInt(std::string InputString);
+	MegaInt();
+	MegaInt(const MegaInt &other);
+	MegaInt(const char* InputString);
+	MegaInt(char* InputString);
+	template <typename T>
+	MegaInt(const T n);
 //Destructor
-    ~MegaInt();
+	~MegaInt();
 //Operators
-	MegaInt operator - ();
+	MegaInt* operator*();
+	
+	MegaInt operator - ()
+	{
+		MegaInt result = *this;
+		result.negative = !negative;
+		if (result.numbers[0] == 0 and result.length == 1)
+			result.negative = false;
+		return result;
+	}
 	MegaInt operator + ();
 	MegaInt operator --();
 	MegaInt operator --(int value);
 	MegaInt operator ++();
 	MegaInt operator ++(int value);
-	template <typename T>
-	short  operator[](T n);
+	unsigned long long operator[](unsigned long long n);
 	
 	
 	
-    MegaInt&operator=(const MegaInt &other);
-    MegaInt operator+(const MegaInt &other);
-    MegaInt operator-(const MegaInt &other);
-    MegaInt operator*(const MegaInt &other);
-    MegaInt operator/(const MegaInt &other);
-    MegaInt operator%(const MegaInt &other);
-    MegaInt operator+=(const MegaInt &other);
-    MegaInt operator-=(const MegaInt &other);
-    MegaInt operator*=(const MegaInt &other);
-    MegaInt operator/=(const MegaInt &other);
-    MegaInt operator%=(const MegaInt &other);
-    
-    template <typename T>
-    MegaInt &operator=(T n);
-    template <typename T>
-    MegaInt operator+(const T n);
-    template <typename T>
-    MegaInt operator-(const T n);
-    template <typename T>
-    MegaInt operator*(const T n);
-    template <typename T>
-    MegaInt operator/(const T n);
-    template <typename T>
-    MegaInt operator%(const T n);
-    template <typename T>
-    MegaInt operator+=(const T n);
-    template <typename T>
-    MegaInt operator-=(const T n);
-    template <typename T>
-    MegaInt operator*=(const T n);
-    template <typename T>
-    MegaInt operator/=(const T n);
-    template <typename T>
-    MegaInt operator%=(const T n);
-    
-    
+	MegaInt&operator=(const char* InputString);
+	
+	MegaInt&operator=(const MegaInt &other);
+	MegaInt operator+(MegaInt &other);
+	MegaInt operator-(MegaInt &other);
+	MegaInt operator*(MegaInt &other);
+	MegaInt operator/(MegaInt &other);
+	MegaInt operator%(const MegaInt &other);
+	MegaInt operator+=(MegaInt &other);
+	MegaInt operator-=(MegaInt &other);
+	MegaInt operator*=(const MegaInt &other);
+	MegaInt operator/=(const MegaInt &other);
+	MegaInt operator%=(const MegaInt &other);
+	
+	
+	MegaInt &operator=(long long n);
+	MegaInt operator+(long long n);
+	MegaInt operator-(long long n);
+	MegaInt operator*(long long n);
+	MegaInt operator/(long long n);
+	MegaInt operator%(long long n);
+	MegaInt operator+=(long long n);
+	MegaInt operator-=(long long n);
+	MegaInt operator*=(long long n);
+	MegaInt operator/=(long long n);
+	MegaInt operator%=(long long n);
+	
+	
 	bool operator ==(const MegaInt &other);
-	bool operator > (const MegaInt &other);
-	bool operator < (const MegaInt &other);
-	bool operator <=(const MegaInt &other);
-	bool operator >=(const MegaInt &other);
-	bool operator !=(const MegaInt &other);
+	bool operator > (MegaInt &other);
+	bool operator < ( MegaInt &other);
+	bool operator <=( MegaInt &other);
+	bool operator >=( MegaInt &other);
+	bool operator !=( MegaInt &other);
 	
-    template <typename T>
-    bool operator==(const T n);
-    template <typename T>
-    bool operator >(const T n);
-	template <typename T>
-	bool operator <(const T n);
-	template <typename T>
-	bool operator <=(const T n);
-	template <typename T>
-	bool operator >=(const T n);
-    template <typename T>
-    bool operator!=(const T n);
+
+	bool operator==(long long n);
+	bool operator >(long long n);
+	bool operator <(long long n);
+	bool operator <=(long long n);
+	bool operator >=(long long n);
+	bool operator!=(long long n);
 //Methods
-/* TODO (#1#): 
-ƒобавить методы и аналогичные 
-дружественные функции:
-”далить 
-последний, добавить последний, вырезать 
-€чейку, добавить €чейку, 
-експоненциальность, количество видимых 
-знаков; словесное описание разр€дов, 
-перевод по разр€дам. 
-*/
-/* TODO (#2#): Take MegaInt:: structures into static fields */
-
 public:
-    void Print(const bool linePrint=false);
-    MegaInt MegaIntModyl();
-    std::string GetStringRecord();
-	
-	unsigned long long GetSize() const;
-	unsigned long long GetWeight() const;
-	//////////////////////////////////////////////////////////////
-	void PushBack(const short n);
-	void PopBack();
-	void Remove(const unsigned long long pos);
-	void Insert(const short n,const unsigned long long pos=0);
-	void SwitchExponential(const unsigned long long ExpLength,const unsigned long long ExpPos=0);
-	void MakeExponential(const unsigned long long ExpPos=1);
-	void MakeUnExponential();
-	void ExpRound(const unsigned long long NumbersAreVisible);
-	unsigned long long NumberOfLastNulls();
-	
-	void MakePrefix();
-	void MakeUnPrefix();
-	
-	template <typename T>
-    friend void SetUpDigitRate (T n=1);
-	template <typename T>
-    void SetUpDigitRate (T n=1);
+	MegaInt DigitNumberMegaInt();
+	unsigned long long DigitNumber() const;
+	MegaInt MegaIntModyl() const;
+	char*& GetCharArrayRecord()const;
+	MegaInt* GetPointer();
+	unsigned long long GetSize()const;
 //Static methods
-
-	//Static methods
-	static unsigned long long GetConstructedTimes()
-	{
-		return constructed;
-	}
-	static unsigned long long GetDestructedTimes()
-	{
-		return destructed;
-	}
-	static unsigned long long GetThousandPowers()
-	{
-		return NumberThousandPowers;
-	}
-	static MegaInt StringToMegaInt(const std::string& InputString)
-	{
-		MegaInt result;
-		std::string String = "";
-		for (unsigned long long i = 0; i < InputString.length(); i++)
-			if ((InputString[i] >= '0' and InputString[i] <= '9') or (InputString[i] == '-' and !String.find('-')))
-				String += InputString[i];
-
-
-		result.negative = false;
-		if (String == "")
-			result = 0;
-		else
-		{
-			if (String.length() > 1 and String[0] == '-')
-				result.negative = true;
-			else if (String.length() == 1 and String[0] == '-')
-				return result;
-
-			result.length = String.length() - result.negative;
-			result.numbers = new short[result.length];
-#ifdef DEBUG
-			std::cout << "numbers:" << String << '|' << std::endl;
-#endif
-			for (unsigned long long i = static_cast<unsigned long long>(0) + result.negative; i < String.length(); i++)
-			{
-				result.numbers[i - result.negative] = short(String[i]) - short('0');
-#ifdef DEBUG
-				std::cout << "n[i]=" << result.numbers[i - result.negative] << " must be:" << short(String[i]) << " negative:" << result.negative << std::endl;
-#endif
-			}
-		}
-		return result;
-	}
+	static unsigned long long GetConstructedTimes();
+	static unsigned long long GetDestructedTimes();
+	static MegaInt StringToMegaInt(const std::string &InputString);
+	static MegaInt CharPointerToMegaInt(const char* InputString);
+	static MegaInt CutMegaIntNumber(MegaInt &n,const unsigned long long newlength=1,const short pos=1);
+	static char*   CutMegaIntNumberInCharPointer
+	(
+		MegaInt &n,
+		const unsigned long long newlength=1,
+		const short pos=1,
+		const bool GetLeftHalf=true
+	);
+	static MegaInt AddNulls(MegaInt &n,const unsigned long long length=0,const short pos=0);
 private:
 //Friend methods
+// 
 //Static variables
+public:
 	static unsigned long long constructed;
 	static unsigned long long destructed;
-	static const unsigned long long NumberThousandPowers=29;
-	static std::string ThousandPowers[NumberThousandPowers];
 //Private Methods
-	void SetNewDigitRate();
-    void EareseDigitRate();
-
-    void ExpUpDate();
+private:
 	bool IsRoundDigit(const unsigned long long StartPos=0);
-	
-    short GetDigitRate(unsigned long long n,unsigned long long i);
-	unsigned long long IntSize(unsigned long long n);
-    template <typename T>
-    T PowerTen(T n);
 };
 unsigned long long MegaInt::constructed=0;
 unsigned long long MegaInt::destructed=0;
-std::string MegaInt::ThousandPowers[NumberThousandPowers]=
-{
-"","K","M","B","T","Q","Sx","Sp","O","No","D","U","Duod","Tred","Quat","Quin"
-,"Sexdec","Septendecillions","Octodecillions","Novemdecillions","Vigintillions"
-,"Unvigintillions","Duovigintillions","Trevigintillion","Quattuorvigintillions"
-,"Quinvigintillions","Sexvigintillions","Septenvigintillions","Octovigintillions"
-};	
 //Stream operators
-std::ostream& operator<<(std::ostream &os, MegaInt &MI);
+std::ostream& operator<<(std::ostream &os,const MegaInt &MI);
 std::istream& operator>>(std::istream &in,const MegaInt &MI);
-//Variables
+std::ostream& operator<<(std::ostream& os,const MegaInt& MI)
+{
+	char* returnchar = MI.GetCharArrayRecord();
+	os << returnchar;
+	if(returnchar != nullptr)
+		delete[] returnchar;
+	return os;
+}
+std::istream& operator>>(std::istream& in, MegaInt& MI)
+{
+	std::string InputString;
+	in >> InputString;
+	MI = MegaInt::StringToMegaInt(InputString);
+	return in;
+}
 #endif

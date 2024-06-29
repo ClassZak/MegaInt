@@ -1,4 +1,4 @@
-﻿#include <cstddef>
+#include <cstddef>
 #include <iostream>
 #include <windows.h>
 #include <conio.h>
@@ -74,61 +74,55 @@
 #define BORDER 10000
 #include <fstream>
 #include <thread>
-#include <mutex>
 #include <functional>
 
-std::mutex printLock;
 
-bool gl_check = false;
+bool gl_check=false;
 
-void Threads100()
+int main()
 {
-
 	std::string files[100];
-	for (short i = 0; i < 100; ++i)
+	for(short i=0;i<100;++i)
 	{
-		files[i] = "Tets";
-		files[i] += to_string(i + 1);
-		files[i] += ".txt";
+		files[i]="Tets";
+		files[i]+=to_string(i+1);
+		files[i]+=".txt";
 	}
-
+	
 	system("pause");
-
+	
 	std::function<void()> tests[100];
-	for (short I_ = 0; I_ < 100; ++I_)
+	for(short I_=0;I_<100;++I_)
 	{
-		tests[I_] = [files, I_]()
+		tests[I_]=[files,I_]()
+		{
+			std::ofstream file;
+			file.open(StringToCharPoint(files[I_]));
+			for(long long i=BORDER/100*I_;i<BORDER/100*(I_+1);++i)
 			{
-				std::ofstream file;
-				file.open(StringToCharPoint(files[I_]));
-				for (long long i = BORDER / 100 * I_; i < BORDER / 100 * (I_ + 1); ++i)
+				std::cout<<"i="<<i<<std::endl;
+				MegaInt m=i;
+				for(long long j=-BORDER;j<BORDER;++j)
 				{
-					printLock.lock();
-					std::cout << "s=" << BORDER / 100 * I_ << std::endl;
-					std::cout << "i=" << i << std::endl << std::endl;
-					printLock.unlock();
-					MegaInt m = i;
-					for (long long j = -BORDER; j < BORDER; ++j)
+					if(j==0)
+					continue;
+					if(gl_check)
+					return 0;
+					MegaInt n=j;
+					if((m/n)!=(i/j))
 					{
-						if (j == 0)
-							continue;
-						if (gl_check)
-							return 0;
-						MegaInt n = j;
-						if ((m / n) != (i / j))
-						{
-							SetConsoleCP(1251);
-							file << "m=\t" << m << "\tn=\t" << n << "\tm/n=\t" << m / n << "\ti/j=\t" << i / j << std::endl;
-							SetConsoleCP(868);
-						}
+						SetConsoleCP(1251);
+						file<<"m=\t"<<m<<"\tn=\t"<<n<<"\tm/n=\t"<<m/n<<"\ti/j=\t"<<i/j<<std::endl;
+						SetConsoleCP(868);
 					}
 				}
-				file.close();
-			};
+			}
+			file.close();
+		};
 	}
-
-
-	std::thread Testing[100] =
+	
+	
+	std::thread Testing[100]=
 	{
 		std::thread(tests[0]),
 		std::thread(tests[1]),
@@ -231,24 +225,12 @@ void Threads100()
 		std::thread(tests[98]),
 		std::thread(tests[99]),
 	};
-
-	for (short i = 0; i < 100; ++i)
+	
+	for(short i=0;i<100;++i)
 	{
 		Testing[i].join();
 	}
-}
 
-
-int main()
-{
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-	system("pause");
-
-	for (MegaInt i = 0; i != 100000; ++i)
-	{
-		std::cout << i * i+(MegaInt&)(i/2- (MegaInt&)(i+1))<<std::endl;
-	}
-
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY-1);
+	
 	system("pause");
 }
