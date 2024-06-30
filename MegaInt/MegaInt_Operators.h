@@ -5,8 +5,12 @@
 #include "MegaInt_Definetion.h"
 MegaInt& MegaInt::operator=(const MegaInt &other)
 {
-	if(numbers!=NULL)
-	delete [] numbers;
+	if (numbers != nullptr)
+	{
+		delete [] numbers;
+		numbers = nullptr;
+	}
+
 	
 	this->negative=other.negative;
 	this->length=other.length;
@@ -25,8 +29,11 @@ MegaInt& MegaInt::operator=(const char* InputString)
 MegaInt& MegaInt::operator=(long long n)
 {
 	long long nmodyl=modyl(n);
-	if(numbers!=NULL)
-	delete [] numbers;
+	if (numbers != nullptr)
+	{
+		delete [] numbers;
+		numbers = nullptr;
+	}
 	length=1;
 	(n<0) ? negative=true : negative=false;
 	numbers=new unsigned long long[length];
@@ -107,7 +114,7 @@ MegaInt MegaInt::operator+(MegaInt& other)
 			
 			++result.length;
 			
-			if(result.numbers!=NULL)
+			if(result.numbers!=nullptr)
 			delete [] result.numbers;
 			result.numbers=newnumbers;
 		}
@@ -159,7 +166,7 @@ MegaInt MegaInt::operator+(MegaInt& other)
 				
 				result.length-=nulls;
 				
-				if(result.numbers!=NULL)
+				if(result.numbers!=nullptr)
 				delete [] result.numbers;
 				result.numbers=newnumbers;
 			}
@@ -231,7 +238,7 @@ MegaInt MegaInt::operator+(long long n)
 				
 				++result.length;
 				
-				if(result.numbers!=NULL)
+				if(result.numbers!=nullptr)
 				delete [] result.numbers;
 				result.numbers=newnumbers;
 			}
@@ -283,7 +290,7 @@ MegaInt MegaInt::operator+(long long n)
 					
 					result.length-=nulls;
 					
-					if(result.numbers!=NULL)
+					if(result.numbers!=nullptr)
 					delete [] result.numbers;
 					result.numbers=newnumbers;
 				}
@@ -421,15 +428,15 @@ MegaInt MegaInt::operator*=(long long n)
 			newnumbers[length-1]=0;
 			
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
 			numbers=new unsigned long long[length];
 			for(unsigned long long i=0;i<length;i++)
 			numbers[i]=newnumbers[i];
 			
-			if(newnumbers!=NULL)
+			if(newnumbers!=nullptr)
 			delete [] newnumbers;
-			newnumbers=NULL;
+			newnumbers=nullptr;
 		}
 		else
 		{
@@ -464,14 +471,14 @@ MegaInt MegaInt::operator*=(long long n)
 					
 					++length;
 					
-					if(numbers!=NULL)
+					if(numbers!=nullptr)
 					delete [] numbers;
 					numbers=new unsigned long long[length];
 					for(unsigned long long i=0;i<length;++i)
 					numbers[i]=newnumbers[i];
-					if(newnumbers!=NULL)
+					if(newnumbers!=nullptr)
 					delete [] newnumbers;
-					newnumbers=NULL;
+					newnumbers=nullptr;
 				}
 			}
 		}
@@ -951,7 +958,7 @@ MegaInt MegaInt::operator --()
 			
 			++length;
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
 			numbers=newnumbers;
 		}		
@@ -983,7 +990,7 @@ MegaInt MegaInt::operator --()
 				
 				length-=nulls;
 				
-				if(numbers!=NULL)
+				if(numbers!=nullptr)
 				delete [] numbers;
 				numbers=newnumbers;
 			}
@@ -1021,7 +1028,7 @@ MegaInt MegaInt::operator --(int value)
 			
 			++length;
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
 			numbers=newnumbers;
 		}		
@@ -1053,7 +1060,7 @@ MegaInt MegaInt::operator --(int value)
 				
 				length-=nulls;
 				
-				if(numbers!=NULL)
+				if(numbers!=nullptr)
 				delete [] numbers;
 				numbers=newnumbers;
 			}
@@ -1091,7 +1098,7 @@ MegaInt MegaInt::operator ++(int value)
 			
 			++length;
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
 			numbers=newnumbers;
 		}		
@@ -1123,7 +1130,7 @@ MegaInt MegaInt::operator ++(int value)
 				
 				length-=nulls;
 				
-				if(numbers!=NULL)
+				if(numbers!=nullptr)
 				delete [] numbers;
 				numbers=newnumbers;
 			}
@@ -1160,7 +1167,7 @@ MegaInt MegaInt::operator ++()
 			
 			++length;
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
 			numbers=newnumbers;
 		}		
@@ -1192,7 +1199,7 @@ MegaInt MegaInt::operator ++()
 				
 				length-=nulls;
 				
-				if(numbers!=NULL)
+				if(numbers!=nullptr)
 				delete [] numbers;
 				numbers=newnumbers;
 			}
@@ -1252,7 +1259,7 @@ MegaInt MegaInt::operator+=(MegaInt& other)
 			
 			++length;
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
 			numbers=newnumbers;
 		}
@@ -1303,7 +1310,7 @@ MegaInt MegaInt::operator+=(MegaInt& other)
 				
 				length-=nulls;
 				
-				if(numbers!=NULL)
+				if(numbers!=nullptr)
 				delete [] numbers;
 				numbers=newnumbers;
 			}
@@ -1366,7 +1373,7 @@ MegaInt MegaInt::operator+=(long long n)
 				
 				++length;
 				
-				if(numbers!=NULL)
+				if(numbers!=nullptr)
 				delete [] numbers;
 				numbers=newnumbers;
 			}
@@ -1416,7 +1423,7 @@ MegaInt MegaInt::operator+=(long long n)
 					
 					length-=nulls;
 					
-					if(numbers!=NULL)
+					if(numbers!=nullptr)
 					delete [] numbers;
 					numbers=newnumbers;
 				}
@@ -1644,8 +1651,9 @@ MegaInt MegaInt::operator/=(long long n)
 			for(unsigned long long i=0;i<length;++i)
 			newnumbers[i]=numbers[i];
 			
-			if(numbers!=NULL)
+			if(numbers!=nullptr)
 			delete [] numbers;
+			numbers = nullptr;
 			
 			numbers=new unsigned long long[length];
 			for(unsigned long long i=0;i<length;++i)
@@ -1683,7 +1691,7 @@ MegaInt MegaInt::operator/=(long long n)
 					
 					length-=nulls;
 					
-					if(numbers!=NULL)
+					if(numbers!=nullptr)
 					delete [] numbers;
 					numbers=newnumbers;
 				}

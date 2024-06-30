@@ -196,9 +196,12 @@ MegaInt::MegaInt(const char* InputString) : MegaInt::MegaInt()
 //Destructor
 MegaInt::~MegaInt()
 {	
-	if(numbers!=NULL)
-	delete [] numbers;
-	numbers=NULL;
+	if (numbers != nullptr)
+	{
+		delete [] numbers;
+		numbers= nullptr;
+	}
+
 	length=0;
 	destructed++;
 }

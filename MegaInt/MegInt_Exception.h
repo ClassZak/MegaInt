@@ -29,7 +29,7 @@ MegaInt::MegaIntException::MegaIntException(MegaInt* m,const char* reason,const 
 int MegaInt::MegaIntException::what()
 {
 	std::cout<<reason<<std::endl;
-	if(numbers!=NULL)
+	if(numbers!=nullptr)
 	{
 		std::cout<<"Operands are:\n";
 		for(unsigned long long i=0;i<count;i++)

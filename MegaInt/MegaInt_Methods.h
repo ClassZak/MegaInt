@@ -37,7 +37,7 @@ char* MegaInt::CutMegaIntNumberInCharPointer
 	MegaInt DigitNumber=((MegaInt)(newlength)-1)*(MegaInt&)((MegaInt)MAX_LIMIT_RATE_MEGAINT)+pos;
 	if(pos==0 and newlength==1)
 	{
-		n.GetCharArrayRecord();
+		//n.GetCharArrayRecord();
 	}
 	if(DigitNumber> (MegaInt&)n.DigitNumberMegaInt())
 	{
@@ -160,9 +160,19 @@ bool MegaInt::IsRoundDigit(const unsigned long long StartPos)
 }
 char*& MegaInt::GetCharArrayRecord()const
 {
-	char* returnarray= (char*)"-\0";
-	(negative) ? returnarray=(char*)"-\0" : returnarray= (char*)"\0";
-	
+	char* returnarray= nullptr;
+	if (negative)
+	{
+		returnarray = new char[2];
+		returnarray[0] = '-';
+		returnarray[1] = '\0';
+	}
+	else
+	{
+		returnarray = new char[1];
+		returnarray[0] = '\0';
+	}
+
 	for(unsigned long long i=0;i<length;++i)
 	{
 		if((numbers[i]<=MAX_LIMIT_MEGAINT-1)and(i))
