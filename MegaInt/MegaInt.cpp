@@ -244,9 +244,10 @@ int main()
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
 	system("pause");
 
-	for (MegaInt i = 0; i != 100000; ++i)
+	for (MegaInt i = 0.; i != 100000; ++i)
 	{
-		std::cout << i * i+(MegaInt&)(i/2- (MegaInt&)(i+1))<<std::endl;
+		MegaInt a = i * 456/66 + i;
+		std::cout << a <<std::endl;
 	}
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY-1);

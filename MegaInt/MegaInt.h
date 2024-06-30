@@ -136,10 +136,7 @@ T CutNumber(T n,const short newsize)
 
 long long modyl(long long n)
 {
-	if(n>=0)
-	return n;
-	else
-	return -n;
+	return (n < 0) ? -n : n;
 }
 unsigned long long len(const MegaInt &n)
 {
@@ -173,29 +170,18 @@ unsigned long long GetCharArrayLength(const char* array)
 		return length;
 	}
 }
-void CharArrayPushBack(char*& array,char last)
+void CharArrayPushBack(char*& array, char last)
 {
-	unsigned long long arraylength=GetCharArrayLength(array);
-	if(!arraylength)
+	size_t arrayLength = (array != nullptr) ? strlen(array) : 0;
+	char* result = new char[arrayLength + 2];
+	if (array != nullptr)
 	{
-		delete array;
-		array=new char[2];
-		array[0]=last;
-		array[1]='\0';
+		strcpy_s(result, arrayLength + 1, array);
+		delete[] array;
 	}
-	else
-	{
-		char* result=new char[arraylength+2];
-		for(unsigned long long i=0;i<arraylength;++i)
-		{
-			result[i]=array[i];
-		}
-		result[arraylength]=last;
-		result[arraylength+1]='\0';
-		
-		delete [] array;
-		array=result;
-	}
+	result[arrayLength] = last;
+	result[arrayLength + 1] = '\0';
+	array = result;
 }
 void CharArrayPushBack(const char*& array,char last)
 {
@@ -220,171 +206,23 @@ void CharArrayPushBack(const char*& array,char last)
 		return;
 	}
 }
-char* CharConcat(char* first,char *second)
-{
-	if((first==NULL)and(second==NULL))
-	{
-		throw std::exception();
-		char* ch=NULL;
-		return ch;
-	}
-	else if((first==NULL)or(second==NULL))
-	{
-		if(first!=NULL)
-		{
-			char* result=first;
-			return result;
-		}
-		else
-		{
-			char* result=second;
-			return result;
-		}
-	}
-	else
-	{
-		char* result;
-		unsigned long long 
-		firstlength=GetCharArrayLength(first),
-		secondlength=GetCharArrayLength(second),	
-		newlength=firstlength+secondlength;
-		
-		
-		result=new char[newlength+1];
-		for(unsigned long long i=0;i<firstlength;++i)
-		result[i]=first[i];
-		
-		for(unsigned long long i=0;i<secondlength;++i)
-		result[i+firstlength]=second[i];
-		result[newlength]='\0';
-		
 
-		return result;	
-	}
-}
-char* CharConcat(const char* first,char *second)
+char* CharConcat(const char* first, const char* second)
 {
-	if((first==NULL)and(second==NULL))
-	{
+	if (!first && !second)
 		throw std::exception();
-		char* ch=NULL;
-		return ch;
-	}
-	else if((first==NULL)or(second==NULL))
-	{
-		if(first!=NULL)
-		{
-			char* result=(char*)first;
-			return result;
-		}
-		else
-		{
-			char* result=second;
-			return result;
-		}
-	}
+	else if (!first)
+		return _strdup(second);
+	else if (!second)
+		return _strdup(first);
 	else
 	{
-		char* result;
-		unsigned long long 
-		firstlength=GetCharArrayLength(first),
-		secondlength=GetCharArrayLength(second),	
-		newlength=firstlength+secondlength;
-		
-		
-		result=new char[newlength+1];
-		for(unsigned long long i=0;i<firstlength;++i)
-		result[i]=first[i];
-		
-		for(unsigned long long i=0;i<secondlength;++i)
-		result[i+firstlength]=second[i];
-		result[newlength]='\0';
-		
-		delete [] second;
-		return result;	
-	}
-}
-char* CharConcat(char* first,const char *second)
-{
-	if((first==NULL)and(second==NULL))
-	{
-		throw std::exception();
-		char* ch=NULL;
-		return ch;
-	}
-	else if((first==NULL)or(second==NULL))
-	{
-		if(first!=NULL)
-		{
-			char* result=(char*)first;
-			return result;
-		}
-		else
-		{
-			char* result=(char*)second;
-			return result;
-		}
-	}
-	else
-	{
-		char* result;
-		unsigned long long 
-		firstlength=GetCharArrayLength(first),
-		secondlength=GetCharArrayLength(second),	
-		newlength=firstlength+secondlength;
-		
-		
-		result=new char[newlength+1];
-		for(unsigned long long i=0;i<firstlength;++i)
-		result[i]=first[i];
-		
-		for(unsigned long long i=0;i<secondlength;++i)
-		result[i+firstlength]=second[i];
-		result[newlength]='\0';
-		
-		delete [] first;
-		return result;	
-	}
-}
-char* CharConcat(const char* first,const char *second)
-{
-	if((first==NULL)and(second==NULL))
-	{
-		throw std::exception();
-		char* ch=NULL;
-		return ch;
-	}
-	else if((first==NULL)or(second==NULL))
-	{
-		if(first!=NULL)
-		{
-			char* result=(char*)first;
-			return result;
-		}
-		else
-		{
-			char* result=(char*)second;
-			return result;
-		}
-	}
-	else
-	{
-		char* result;
-		unsigned long long 
-		firstlength=GetCharArrayLength(first),
-		secondlength=GetCharArrayLength(second),	
-		newlength=firstlength+secondlength;
-		
-		
-		result=new char[newlength+1];
-		for(unsigned long long i=0;i<firstlength;++i)
-		result[i]=first[i];
-		
-		for(unsigned long long i=0;i<secondlength;++i)
-		result[i+firstlength]=second[i];
-		result[newlength]='\0';
-		
-		return result;	
+		std::size_t firstLength = strlen(first);
+		std::size_t secondLength = strlen(second);
+		char* result = new char[firstLength + secondLength + 1];
+		strcpy_s(result, firstLength + 1, first);
+		strcpy_s(result + firstLength, secondLength + 1, second);
+		return result;
 	}
 }
 unsigned long long find_in_chars(char* array,char element)

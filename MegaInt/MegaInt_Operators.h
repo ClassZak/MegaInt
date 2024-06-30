@@ -404,7 +404,7 @@ MegaInt MegaInt::operator*(long long n)
 	result.negative=false;
 	return result;
 }
-MegaInt MegaInt::operator*=(const MegaInt &other)
+MegaInt& MegaInt::operator*=(const MegaInt &other)
 {
 	*this=*this*(MegaInt&)other;
 	return *this;
@@ -412,7 +412,7 @@ MegaInt MegaInt::operator*=(const MegaInt &other)
 
 
 
-MegaInt MegaInt::operator*=(long long n)
+MegaInt& MegaInt::operator*=(long long n)
 {
 	if(*this==0)
 	return *this;
@@ -1216,7 +1216,7 @@ MegaInt MegaInt::operator ++()
 }
 
 
-MegaInt MegaInt::operator+=(MegaInt& other)
+MegaInt& MegaInt::operator+=(MegaInt& other)
 {
 	if(*this==0)
 	{
@@ -1324,7 +1324,7 @@ MegaInt MegaInt::operator+=(MegaInt& other)
 	}
 }
 
-MegaInt MegaInt::operator+=(long long n)
+MegaInt& MegaInt::operator+=(long long n)
 {
 	if(*this==0)
 	{
@@ -1434,14 +1434,14 @@ MegaInt MegaInt::operator+=(long long n)
 		}	
 	}
 }
-MegaInt MegaInt::operator-=(MegaInt& other)
+MegaInt& MegaInt::operator-=(MegaInt& other)
 {
 	*this+=(MegaInt&)other.operator-();
 	return *this;
 }
 
 
-MegaInt MegaInt::operator-=(long long n)
+MegaInt& MegaInt::operator-=(long long n)
 {
 	if(n<MAX_LONG_LONG)
 	*this+=-n;
@@ -1454,159 +1454,159 @@ MegaInt MegaInt::operator/(MegaInt& other)
 {
 	try
 	{
-	MegaInt result=0;
+		MegaInt result=0;
 	
-	if(*this==0)
-	return result;
-	if(other==0)
-	{
-		throw MegaInt::MegaIntException("Division by zero");
+		if(*this==0)
 		return result;
-	}
-	if(other==1)
-	{
-		result=*this;
-		return result;
-	}
-	if(MegaIntModyl()< (MegaInt&)other.MegaIntModyl())
-	return result;
-//			делимое  делитель частное
-//	MegaInt dividend,divisor, quotient;
-	
-	MegaInt Divisor,Dividend=MegaIntModyl(),SmallDividend=0,AdditionalLength,Difference=0,
-	GlobalDifference=0,DifferenceLength,LastNulls=0,BiggerDivisior=other.MegaIntModyl();
-	
-	while((Dividend.numbers[Dividend.length-1]%10==0)and(BiggerDivisior.numbers[BiggerDivisior.length-1]%10==0))
-	{
-		BiggerDivisior/=10;
-		Dividend/=10;
-	}
-	
-	short CurrQuotient=0;
-	short CutedPos=IntSize(BiggerDivisior.numbers[0])-1;
-	unsigned long long CutedLength=BiggerDivisior.length;
-	char* DividendCharPointer;
-	char* SmallDividendCharPointer;
-	while(!(Dividend<BiggerDivisior))
-	{
-		CurrQuotient=0;
-		SmallDividend=MegaInt::CutMegaIntNumber(Dividend,1,1);
-		Divisor=BiggerDivisior;
-		if(SmallDividend<Divisor)
+		if(other==0)
 		{
-			CutedPos=IntSize(Difference.numbers[0]);
-			CutedLength=BiggerDivisior.length;
-			short ChangedRate=0;
-			while(SmallDividend<Divisor)
+			throw MegaInt::MegaIntException("Division by zero");
+			return result;
+		}
+		if(other==1)
+		{
+			result=*this;
+			return result;
+		}
+		if(MegaIntModyl()< (MegaInt&)other.MegaIntModyl())
+		return result;
+	//			делимое  делитель частное
+	//	MegaInt dividend,divisor, quotient;
+	
+		MegaInt Divisor,Dividend=MegaIntModyl(),SmallDividend=0,AdditionalLength,Difference=0,
+		GlobalDifference=0,DifferenceLength,LastNulls=0,BiggerDivisior=other.MegaIntModyl();
+	
+		while((Dividend.numbers[Dividend.length-1]%10==0)and(BiggerDivisior.numbers[BiggerDivisior.length-1]%10==0))
+		{
+			BiggerDivisior/=10;
+			Dividend/=10;
+		}
+	
+		short CurrQuotient=0;
+		short CutedPos=IntSize(BiggerDivisior.numbers[0])-1;
+		unsigned long long CutedLength=BiggerDivisior.length;
+		char* DividendCharPointer;
+		char* SmallDividendCharPointer;
+		while(!(Dividend<BiggerDivisior))
+		{
+			CurrQuotient=0;
+			SmallDividend=MegaInt::CutMegaIntNumber(Dividend,1,1);
+			Divisor=BiggerDivisior;
+			if(SmallDividend<Divisor)
 			{
-				if(CutedPos>MAX_LIMIT_RATE_MEGAINT)
+				CutedPos=IntSize(Difference.numbers[0]);
+				CutedLength=BiggerDivisior.length;
+				short ChangedRate=0;
+				while(SmallDividend<Divisor)
 				{
-					CutedPos=1;
-					++CutedLength;
-				}
-				if
-				(
-					((MegaInt)(CutedLength)-1)*(MegaInt&)
-					((MegaInt)MAX_LIMIT_RATE_MEGAINT)+CutedPos<= (MegaInt&)Dividend.DigitNumberMegaInt()
-				)
-				{
-					SmallDividend=MegaInt::CutMegaIntNumber(Dividend,CutedLength,CutedPos);
-					DividendCharPointer=Dividend.GetCharArrayRecord();
-					SmallDividendCharPointer=SmallDividend.GetCharArrayRecord();
+					if(CutedPos>MAX_LIMIT_RATE_MEGAINT)
+					{
+						CutedPos=1;
+						++CutedLength;
+					}
 					if
 					(
-						SmallDividend.DigitNumberMegaInt()> (MegaInt&)Difference.DigitNumberMegaInt()
-						and(ChangedRate==2 or Difference==0)
+						((MegaInt)(CutedLength)-1)*(MegaInt&)
+						((MegaInt)MAX_LIMIT_RATE_MEGAINT)+CutedPos<= (MegaInt&)Dividend.DigitNumberMegaInt()
 					)
-					result*=10;
+					{
+						SmallDividend=MegaInt::CutMegaIntNumber(Dividend,CutedLength,CutedPos);
+						DividendCharPointer=Dividend.GetCharArrayRecord();
+						SmallDividendCharPointer=SmallDividend.GetCharArrayRecord();
+						if
+						(
+							SmallDividend.DigitNumberMegaInt()> (MegaInt&)Difference.DigitNumberMegaInt()
+							and(ChangedRate==2 or Difference==0)
+						)
+						result*=10;
+						else
+						if(ChangedRate<2)
+						++ChangedRate;
+						++CutedPos;
+					}
 					else
-					if(ChangedRate<2)
-					++ChangedRate;
-					++CutedPos;
-				}
-				else
-				{
-					return result;
-					SmallDividend=(long long)0;
-					result*=10;
-					break;
+					{
+						return result;
+						SmallDividend=(long long)0;
+						result*=10;
+						break;
+					}
 				}
 			}
-		}
-		if(SmallDividend==0)
-		return result;
+			if(SmallDividend==0)
+			return result;
 		
-		AdditionalLength=Dividend.DigitNumberMegaInt()-(MegaInt&)SmallDividend.DigitNumberMegaInt();
+			AdditionalLength=Dividend.DigitNumberMegaInt()-(MegaInt&)SmallDividend.DigitNumberMegaInt();
 		
-		while(!(BiggerDivisior*CurrQuotient>SmallDividend))
-		++CurrQuotient;
-		--CurrQuotient;
+			while(!(BiggerDivisior*CurrQuotient>SmallDividend))
+			++CurrQuotient;
+			--CurrQuotient;
 		
-		result*=10;
-		result+=CurrQuotient;
-		Divisor=BiggerDivisior*CurrQuotient;
-		Difference=SmallDividend-Divisor;
-		DifferenceLength=Divisor.DigitNumberMegaInt()-(MegaInt&)SmallDividend.DigitNumberMegaInt();
-		AdditionalLength=Dividend.DigitNumberMegaInt()-DifferenceLength;
-		if(Divisor!=0)
-		{
-			while(Divisor.DigitNumberMegaInt()<AdditionalLength)
-			Divisor*=MAX_LIMIT_MEGAINT;
-			if(Divisor.DigitNumberMegaInt()>AdditionalLength)
-			Divisor/=MAX_LIMIT_MEGAINT;
-			while(Divisor.DigitNumberMegaInt()<AdditionalLength)
-			Divisor*=10;
-			while(Divisor>Dividend)
-			Divisor/=10;
-		}
-		MegaInt LostNulls=0;
-		MegaInt currcuted;
-		if(SmallDividend.DigitNumberMegaInt()+1<= (MegaInt&)Dividend.DigitNumberMegaInt() and Difference==0
-		and(((MegaInt)(SmallDividend.length)-1)* (MegaInt&)((MegaInt)MAX_LIMIT_RATE_MEGAINT)
-		+IntSize(SmallDividend.numbers[SmallDividend.length-1])+1
-		<= (MegaInt&)Dividend.DigitNumberMegaInt()))
-		{
-			currcuted=MegaInt::CutMegaIntNumber
-			(
-				Dividend,SmallDividend.length,IntSize(SmallDividend.numbers[SmallDividend.length-1])+1
-			);
-			if(currcuted.numbers[currcuted.length-1]%10==0)
+			result*=10;
+			result+=CurrQuotient;
+			Divisor=BiggerDivisior*CurrQuotient;
+			Difference=SmallDividend-Divisor;
+			DifferenceLength=Divisor.DigitNumberMegaInt()-(MegaInt&)SmallDividend.DigitNumberMegaInt();
+			AdditionalLength=Dividend.DigitNumberMegaInt()-DifferenceLength;
+			if(Divisor!=0)
 			{
-				unsigned long long clength=SmallDividend.length;
-				short cpos=IntSize(SmallDividend.numbers[SmallDividend.length-1])+1;
-				if(cpos>MAX_LIMIT_RATE_MEGAINT)
+				while(Divisor.DigitNumberMegaInt()<AdditionalLength)
+				Divisor*=MAX_LIMIT_MEGAINT;
+				if(Divisor.DigitNumberMegaInt()>AdditionalLength)
+				Divisor/=MAX_LIMIT_MEGAINT;
+				while(Divisor.DigitNumberMegaInt()<AdditionalLength)
+				Divisor*=10;
+				while(Divisor>Dividend)
+				Divisor/=10;
+			}
+			MegaInt LostNulls=0;
+			MegaInt currcuted;
+			if(SmallDividend.DigitNumberMegaInt()+1<= (MegaInt&)Dividend.DigitNumberMegaInt() and Difference==0
+			and(((MegaInt)(SmallDividend.length)-1)* (MegaInt&)((MegaInt)MAX_LIMIT_RATE_MEGAINT)
+			+IntSize(SmallDividend.numbers[SmallDividend.length-1])+1
+			<= (MegaInt&)Dividend.DigitNumberMegaInt()))
+			{
+				currcuted=MegaInt::CutMegaIntNumber
+				(
+					Dividend,SmallDividend.length,IntSize(SmallDividend.numbers[SmallDividend.length-1])+1
+				);
+				if(currcuted.numbers[currcuted.length-1]%10==0)
 				{
-					cpos=1;
-					++clength;
-				}
-				while(currcuted.numbers[currcuted.length-1]%10==0)
-				{
-					++LostNulls;
-					++cpos;
+					unsigned long long clength=SmallDividend.length;
+					short cpos=IntSize(SmallDividend.numbers[SmallDividend.length-1])+1;
 					if(cpos>MAX_LIMIT_RATE_MEGAINT)
 					{
 						cpos=1;
 						++clength;
 					}
-					if(currcuted.DigitNumberMegaInt()+1<= (MegaInt&)Dividend.DigitNumberMegaInt())
-					currcuted=MegaInt::CutMegaIntNumber(Dividend,clength,cpos);
-					if(Dividend.DigitNumberMegaInt()==currcuted.DigitNumberMegaInt())
-					break;
+					while(currcuted.numbers[currcuted.length-1]%10==0)
+					{
+						++LostNulls;
+						++cpos;
+						if(cpos>MAX_LIMIT_RATE_MEGAINT)
+						{
+							cpos=1;
+							++clength;
+						}
+						if(currcuted.DigitNumberMegaInt()+1<= (MegaInt&)Dividend.DigitNumberMegaInt())
+						currcuted=MegaInt::CutMegaIntNumber(Dividend,clength,cpos);
+						if(Dividend.DigitNumberMegaInt()==currcuted.DigitNumberMegaInt())
+						break;
+					}
+					for(MegaInt i=0;i<LostNulls;++i)
+					result*=10;
 				}
-				for(MegaInt i=0;i<LostNulls;++i)
-				result*=10;
 			}
+			Dividend-=Divisor;
 		}
-		Dividend-=Divisor;
-	}
-	while(result* (MegaInt&)other.MegaIntModyl()<=(MegaInt&)MegaIntModyl())
-	result*=10;
-	while(result* (MegaInt&)other.MegaIntModyl()> (MegaInt&) MegaIntModyl())
-	result/=10;
+		while(result* (MegaInt&)other.MegaIntModyl()<=(MegaInt&)MegaIntModyl())
+		result*=10;
+		while(result* (MegaInt&)other.MegaIntModyl()> (MegaInt&) MegaIntModyl())
+		result/=10;
 	
-	if(other.negative!=negative)
-	result.negative=true;
-	return result;
+		if(other.negative!=negative)
+		result.negative=true;
+		return result;
 	}
 	catch(MegaInt::MegaIntException &ex)
 	{
@@ -1614,7 +1614,7 @@ MegaInt MegaInt::operator/(MegaInt& other)
 		system("pause");
 	}
 }
-MegaInt MegaInt::operator/=(const MegaInt &other)
+MegaInt& MegaInt::operator/=(const MegaInt &other)
 {
 	*this=*this/(MegaInt&)other;
 	return *this;
@@ -1625,7 +1625,7 @@ MegaInt MegaInt::operator/(long long n)
 	return *this/(MegaInt&)(MegaInt)n;
 }
 
-MegaInt MegaInt::operator/=(long long n)
+MegaInt& MegaInt::operator/=(long long n)
 {
 	if(n==0)
 	{
@@ -1710,7 +1710,7 @@ MegaInt MegaInt::operator%(const MegaInt &other)
 	MegaInt result=*this-(MegaInt&)((*this/(MegaInt&)other)* (MegaInt&)other);
 	return result;
 }
-MegaInt MegaInt::operator%=(const MegaInt &other)
+MegaInt& MegaInt::operator%=(const MegaInt &other)
 {
 	*this=*this%other;
 	return *this;
@@ -1730,7 +1730,7 @@ MegaInt MegaInt::operator%(long long n)
 	}
 }
 
-MegaInt MegaInt::operator%=(long long n)
+MegaInt& MegaInt::operator%=(long long n)
 {
 	*this=*this%n;
 	return *this;

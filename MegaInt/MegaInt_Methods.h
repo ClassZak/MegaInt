@@ -158,44 +158,64 @@ bool MegaInt::IsRoundDigit(const unsigned long long StartPos)
 	}
 	return result;
 }
-char*& MegaInt::GetCharArrayRecord()const
+char*& MegaInt::GetCharArrayRecord() const
 {
-	char* returnarray= nullptr;
-	if (negative)
-	{
-		returnarray = new char[2];
-		returnarray[0] = '-';
-		returnarray[1] = '\0';
+	char* returnArray = nullptr;
+	if (negative) {
+		returnArray = new char[2];
+		returnArray[0] = '-';
+		returnArray[1] = '\0';
 	}
 	else
 	{
-		returnarray = new char[1];
-		returnarray[0] = '\0';
+		returnArray = new char[1];
+		returnArray[0] = '\0';
 	}
 
-	for(unsigned long long i=0;i<length;++i)
+	for (unsigned long long i = 0; i < length; ++i)
 	{
-		if((numbers[i]<=MAX_LIMIT_MEGAINT-1)and(i))
+		if (numbers[i] <= MAX_LIMIT_MEGAINT - 1 && i > 0)
 		{
-			char* nulls=(char*)"";
-			for(short j=0;j<MAX_LIMIT_RATE_MEGAINT-IntSize(numbers[i]);++j)
-			CharArrayPushBack(nulls,'0');
-			
-			if(returnarray[0] == '\0')
-			returnarray=nulls;
+			char* nulls = new char[MAX_LIMIT_RATE_MEGAINT - IntSize(numbers[i]) + 1];
+			memset(nulls, '0', MAX_LIMIT_RATE_MEGAINT - IntSize(numbers[i]));
+			nulls[MAX_LIMIT_RATE_MEGAINT - IntSize(numbers[i])] = '\0';
+
+			if (returnArray[0] == '\0')
+			{
+				delete[] returnArray;
+				returnArray = nulls;
+			}
 			else
-			returnarray=CharConcat(returnarray,nulls);
+			{
+				char* temp = _strdup(returnArray);
+				delete[] returnArray;
+				returnArray = CharConcat((const char*)temp, (const char*)nulls);
+				delete[] temp;
+			}
 		}
-		if(returnarray[0] == '\0')
-		returnarray=to_char_pointer(numbers[i]);
+
+		char* numberString = to_char_pointer(numbers[i]);
+		if (!returnArray || returnArray[0] == '\0')
+		{
+			delete[] returnArray;
+			returnArray = numberString;
+		}
 		else
-		returnarray=CharConcat(returnarray,to_char_pointer(numbers[i]));
-		#ifdef DIGIT_SELECTION
-		CharArrayPushBack(returnarray,'|');
-		#endif
+		{
+			char* temp = _strdup(returnArray);
+			delete[] returnArray;
+
+			returnArray = CharConcat((const char*)temp, (const char*)numberString);
+			delete[] numberString;
+			delete[] temp;
+		}
 	}
-	CharArrayPushBack(returnarray,'\0');
-	return returnarray;
+
+#ifdef DIGIT_SELECTION
+		CharArrayPushBack(returnArray, '|');
+#endif
+	CharArrayPushBack(returnArray, '\0');
+	return returnArray;
 }
 MegaInt MegaInt::CharPointerToMegaInt(const char* InputString)
 {

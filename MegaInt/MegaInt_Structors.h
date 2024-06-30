@@ -6,7 +6,7 @@ MegaInt::MegaInt()
 	numbers=new unsigned long long[1];
 	numbers[0]=0;
 	negative=false;
-	constructed++;
+	++constructed;
 }
 MegaInt::MegaInt(const MegaInt &other)
 {
@@ -15,12 +15,12 @@ MegaInt::MegaInt(const MegaInt &other)
 	numbers=new unsigned long long[length];
 	for(unsigned long long i=0;i<length;i++)
 	this->numbers[i]=other.numbers[i];
-	constructed++;
+	++constructed;
 }
-template <typename T>
-MegaInt::MegaInt(const T n)
+#pragma region Numbers constructors
+MegaInt::MegaInt(long long n)
 {
-	T nmodyl=modyl(n);
+	long long nmodyl=modyl(n);
 	
 	(n<0) ? negative=true : negative=false;
 	length=1;
@@ -36,8 +36,69 @@ MegaInt::MegaInt(const T n)
 		delete [] numbers;
 		numbers=newnumbers;
 	}
-	constructed++;
+	++constructed;
 }
+MegaInt::MegaInt(unsigned long long n)
+{
+	length = 1;
+	negative = false;
+	numbers = new unsigned long long[length];
+	numbers[0] = n;
+
+	if (n >= MAX_LIMIT_MEGAINT)
+	{
+		++length;
+		unsigned long long* newnumbers = new unsigned long long[length];
+		newnumbers[1] = CutNumber((unsigned long long)n, MAX_LIMIT_RATE_MEGAINT);
+		newnumbers[0] = (n) / PowerTen(MAX_LIMIT_RATE_MEGAINT);
+		delete[] numbers;
+		numbers = newnumbers;
+	}
+	++constructed;
+}
+
+
+MegaInt::MegaInt(long n)
+	: MegaInt::MegaInt((long long)n)
+{
+}
+MegaInt::MegaInt(short n)
+	: MegaInt::MegaInt((long long)n)
+{
+}
+MegaInt::MegaInt(int n)
+	: MegaInt::MegaInt((long long)n)
+{
+}
+MegaInt::MegaInt(char n)
+	: MegaInt::MegaInt((long long)n)
+{
+}
+
+
+MegaInt::MegaInt(unsigned long n)
+	: MegaInt::MegaInt((unsigned long long)n)
+{
+}
+MegaInt::MegaInt(unsigned short n)
+	: MegaInt::MegaInt((unsigned long long)n)
+{
+}
+MegaInt::MegaInt(unsigned int n)
+	: MegaInt::MegaInt((unsigned long long)n)
+{
+}
+MegaInt::MegaInt(unsigned char n)
+	: MegaInt::MegaInt((unsigned long long)n)
+{
+}
+
+
+MegaInt::MegaInt(double n)
+	: MegaInt::MegaInt((long long)trunc(n))
+{
+}
+#pragma endregion
 MegaInt::MegaInt(char* InputString) : MegaInt::MegaInt()
 {
 	*this=(long long)0;
@@ -203,6 +264,6 @@ MegaInt::~MegaInt()
 	}
 
 	length=0;
-	destructed++;
+	++destructed;
 }
 #endif

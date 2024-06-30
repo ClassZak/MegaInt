@@ -46,8 +46,19 @@ public:
 	MegaInt(const MegaInt &other);
 	MegaInt(const char* InputString);
 	MegaInt(char* InputString);
-	template <typename T>
-	MegaInt(const T n);
+	MegaInt(long long n);
+	MegaInt(unsigned long long n);
+
+	MegaInt(long n);
+	MegaInt(short n);
+	MegaInt(int n);
+	MegaInt(char n);
+	MegaInt(unsigned long n);
+	MegaInt(unsigned short n);
+	MegaInt(unsigned int n);
+	MegaInt(unsigned char n);
+
+	MegaInt(double n);
 //Destructor
 	~MegaInt();
 //Operators
@@ -78,24 +89,24 @@ public:
 	MegaInt operator*(MegaInt &other);
 	MegaInt operator/(MegaInt &other);
 	MegaInt operator%(const MegaInt &other);
-	MegaInt operator+=(MegaInt &other);
-	MegaInt operator-=(MegaInt &other);
-	MegaInt operator*=(const MegaInt &other);
-	MegaInt operator/=(const MegaInt &other);
-	MegaInt operator%=(const MegaInt &other);
+	MegaInt& operator+=(MegaInt &other);
+	MegaInt& operator-=(MegaInt &other);
+	MegaInt& operator*=(const MegaInt &other);
+	MegaInt& operator/=(const MegaInt &other);
+	MegaInt& operator%=(const MegaInt &other);
 	
 	
-	MegaInt &operator=(long long n);
+	MegaInt& operator=(long long n);
 	MegaInt operator+(long long n);
 	MegaInt operator-(long long n);
 	MegaInt operator*(long long n);
 	MegaInt operator/(long long n);
 	MegaInt operator%(long long n);
-	MegaInt operator+=(long long n);
-	MegaInt operator-=(long long n);
-	MegaInt operator*=(long long n);
-	MegaInt operator/=(long long n);
-	MegaInt operator%=(long long n);
+	MegaInt& operator+=(long long n);
+	MegaInt& operator-=(long long n);
+	MegaInt& operator*=(long long n);
+	MegaInt& operator/=(long long n);
+	MegaInt& operator%=(long long n);
 	
 	
 	bool operator ==(const MegaInt &other);
