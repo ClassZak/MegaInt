@@ -183,29 +183,6 @@ void CharArrayPushBack(char*& array, char last)
 	result[arrayLength + 1] = '\0';
 	array = result;
 }
-void CharArrayPushBack(const char*& array,char last)
-{
-	unsigned long long arraylength=GetCharArrayLength(array);
-	if(!arraylength)
-	{
-		delete array;
-		char *result=new char[2];
-		result[0]=last;
-		result[1]='\0';
-		return;
-	}
-	else
-	{
-		char* result=new char[arraylength+2];
-		for(unsigned long long i=0;i<arraylength;++i)
-		{
-			result[i]=array[i];
-		}
-		result[arraylength]=last;
-		result[arraylength+1]='\0';
-		return;
-	}
-}
 
 char* CharConcat(const char* first, const char* second)
 {

@@ -88,12 +88,12 @@ public:
 	MegaInt operator-(MegaInt &other);
 	MegaInt operator*(MegaInt &other);
 	MegaInt operator/(MegaInt &other);
-	MegaInt operator%(const MegaInt &other);
+	MegaInt operator%(MegaInt &other);
 	MegaInt& operator+=(MegaInt &other);
 	MegaInt& operator-=(MegaInt &other);
-	MegaInt& operator*=(const MegaInt &other);
-	MegaInt& operator/=(const MegaInt &other);
-	MegaInt& operator%=(const MegaInt &other);
+	MegaInt& operator*=(MegaInt &other);
+	MegaInt& operator/=(MegaInt &other);
+	MegaInt& operator%=(MegaInt &other);
 	
 	
 	MegaInt& operator=(long long n);
@@ -111,10 +111,10 @@ public:
 	
 	bool operator ==(const MegaInt &other);
 	bool operator > (MegaInt &other);
-	bool operator < ( MegaInt &other);
-	bool operator <=( MegaInt &other);
-	bool operator >=( MegaInt &other);
-	bool operator !=( MegaInt &other);
+	bool operator < (MegaInt &other);
+	bool operator <=(MegaInt &other);
+	bool operator >=(MegaInt &other);
+	bool operator !=(MegaInt &other);
 	
 
 	bool operator==(long long n);

@@ -102,7 +102,8 @@ MegaInt::MegaInt(double n)
 MegaInt::MegaInt(char* InputString) : MegaInt::MegaInt()
 {
 	*this=(long long)0;
-	char* array = (char*)"";
+	char* array = new char[1];
+	array[0] = '\0';
 	unsigned long long newlength=0;
 	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
 	{
@@ -172,15 +173,19 @@ MegaInt::MegaInt(char* InputString) : MegaInt::MegaInt()
 				newnumbers[newlength-i-1]=curr;
 			}
 			length=newlength;
-			delete numbers;
+			delete[] numbers;
 			numbers=newnumbers;
 		}
 	}
+	if (array != nullptr)
+		delete[] array;
 }
 MegaInt::MegaInt(const char* InputString) : MegaInt::MegaInt()
 {
 	*this=(long long)0;
-	char* array = (char*)"";
+	char* array = new char[1];
+	array[0] = '\0';
+
 	unsigned long long newlength=0;
 	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
 	{
@@ -214,7 +219,7 @@ MegaInt::MegaInt(const char* InputString) : MegaInt::MegaInt()
 	{
 		negative=true;
 		--lastlength;
-		char *newarray=new char[lastlength+1];
+		char*newarray=new char[lastlength+1];
 		for(unsigned long long i=0;i<lastlength;++i)
 		newarray[i]=array[i+1];
 		newarray[lastlength]='\0';
@@ -249,10 +254,12 @@ MegaInt::MegaInt(const char* InputString) : MegaInt::MegaInt()
 				newnumbers[newlength-i-1]=curr;
 			}
 			length=newlength;
-			delete numbers;
+			delete[] numbers;
 			numbers=newnumbers;
 		}
 	}
+	if (array != nullptr)
+		delete[] array;
 }
 //Destructor
 MegaInt::~MegaInt()

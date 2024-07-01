@@ -404,7 +404,7 @@ MegaInt MegaInt::operator*(long long n)
 	result.negative=false;
 	return result;
 }
-MegaInt& MegaInt::operator*=(const MegaInt &other)
+MegaInt& MegaInt::operator*=(MegaInt &other)
 {
 	*this=*this*(MegaInt&)other;
 	return *this;
@@ -1429,7 +1429,7 @@ MegaInt& MegaInt::operator+=(long long n)
 				}
 			}
 			if(numbers[0]==0 and length==1)
-			negative=false;
+				negative=false;
 			return *this;
 		}	
 	}
@@ -1485,8 +1485,8 @@ MegaInt MegaInt::operator/(MegaInt& other)
 		short CurrQuotient=0;
 		short CutedPos=IntSize(BiggerDivisior.numbers[0])-1;
 		unsigned long long CutedLength=BiggerDivisior.length;
-		char* DividendCharPointer;
-		char* SmallDividendCharPointer;
+		char* DividendCharPointer=nullptr;
+		char* SmallDividendCharPointer=nullptr;
 		while(!(Dividend<BiggerDivisior))
 		{
 			CurrQuotient=0;
@@ -1511,6 +1511,13 @@ MegaInt MegaInt::operator/(MegaInt& other)
 					)
 					{
 						SmallDividend=MegaInt::CutMegaIntNumber(Dividend,CutedLength,CutedPos);
+
+
+						if (DividendCharPointer != nullptr)
+							delete[] DividendCharPointer;
+						if (SmallDividendCharPointer != nullptr)
+							delete[] SmallDividendCharPointer;
+
 						DividendCharPointer=Dividend.GetCharArrayRecord();
 						SmallDividendCharPointer=SmallDividend.GetCharArrayRecord();
 						if
@@ -1614,9 +1621,9 @@ MegaInt MegaInt::operator/(MegaInt& other)
 		system("pause");
 	}
 }
-MegaInt& MegaInt::operator/=(const MegaInt &other)
+MegaInt& MegaInt::operator/=(MegaInt &other)
 {
-	*this=*this/(MegaInt&)other;
+	*this=*this/other;
 	return *this;
 }
 
@@ -1705,12 +1712,12 @@ MegaInt& MegaInt::operator/=(long long n)
 	return *this;
 }
 
-MegaInt MegaInt::operator%(const MegaInt &other)
+MegaInt MegaInt::operator%(MegaInt &other)
 {
 	MegaInt result=*this-(MegaInt&)((*this/(MegaInt&)other)* (MegaInt&)other);
 	return result;
 }
-MegaInt& MegaInt::operator%=(const MegaInt &other)
+MegaInt& MegaInt::operator%=(MegaInt &other)
 {
 	*this=*this%other;
 	return *this;

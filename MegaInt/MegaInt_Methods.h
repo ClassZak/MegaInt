@@ -191,6 +191,7 @@ char*& MegaInt::GetCharArrayRecord() const
 				delete[] returnArray;
 				returnArray = CharConcat((const char*)temp, (const char*)nulls);
 				delete[] temp;
+				delete[] nulls;
 			}
 		}
 

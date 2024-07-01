@@ -244,12 +244,19 @@ int main()
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
 	system("pause");
 
-	for (MegaInt i = 0.; i != 100000; ++i)
+	while (true)
 	{
-		MegaInt a = i * 456/66 + i;
-		std::cout << a <<std::endl;
+
+		for (MegaInt i = 0.; i != 1000; ++i)
+		{
+			MegaInt a = i/5*20+(MegaInt&)(i/7);
+			//std::cout << i <<std::endl;
+		}
 	}
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY-1);
+	std::cout << MegaInt::constructed << std::endl;
+	std::cout << MegaInt::destructed << std::endl;
+
 	system("pause");
 }
