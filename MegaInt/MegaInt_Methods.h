@@ -198,10 +198,14 @@ char*& MegaInt::GetCharArrayRecord() const
 			}
 		}
 
-		char* numberString = to_char_pointer(numbers[i]);
-		if (returnArray!=nullptr || returnArray[0] == '\0')
+		char* numberString = nullptr;
+		to_char_pointer(numberString,numbers[i]);
+
+		if (returnArray==nullptr || returnArray[0] == '\0')
 		{
-			delete[] returnArray;
+			if(returnArray != nullptr)
+				delete[] returnArray;
+
 			returnArray = numberString;
 		}
 		else

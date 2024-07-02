@@ -246,7 +246,8 @@ int main()
 	while (true)
 	for (MegaInt i = 20; i != 1000; ++i)
 	{
-		MegaInt a = i/5*20+(MegaInt&)(i/7);
+		MegaInt a = 0;
+		a=i / 5 * 20 + (MegaInt&)((i / 7)*(MegaInt&)(i%12));
 		//std::cout << i <<std::endl;
 	}
 

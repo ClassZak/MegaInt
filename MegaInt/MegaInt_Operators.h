@@ -1541,11 +1541,25 @@ MegaInt MegaInt::operator/(MegaInt& other)
 						++CutedPos;
 					}
 					else
+					{
+						if (DividendCharPointer != nullptr)
+							delete[] DividendCharPointer;
+						if (SmallDividendCharPointer != nullptr)
+							delete[] SmallDividendCharPointer;
+
 						return result;
+					}
 				}
 			}
-			if(SmallDividend==0)
+			if (SmallDividend == 0)
+			{
+				if (DividendCharPointer != nullptr)
+					delete[] DividendCharPointer;
+				if (SmallDividendCharPointer != nullptr)
+					delete[] SmallDividendCharPointer;
+
 				return result;
+			}
 		
 			AdditionalLength=Dividend.DigitNumberMegaInt()-(MegaInt&)SmallDividend.DigitNumberMegaInt();
 		
@@ -1617,6 +1631,14 @@ MegaInt MegaInt::operator/(MegaInt& other)
 	
 		if(other.negative!=negative)
 		result.negative=true;
+
+
+		if (DividendCharPointer != nullptr)
+			delete[] DividendCharPointer;
+		if (SmallDividendCharPointer != nullptr)
+			delete[] SmallDividendCharPointer;
+
+
 		return result;
 	}
 	catch(MegaInt::MegaIntException &ex)

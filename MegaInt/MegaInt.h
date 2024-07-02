@@ -107,7 +107,7 @@ template <typename T>
 std::string to_string(T n);
 
 template <typename T>
-char* to_char_pointer(T n);
+void to_char_pointer(char*& array,T n);
 
 char* StringToCharPoint(const std::string &String);
 
@@ -170,15 +170,22 @@ unsigned long long GetCharArrayLength(const char* array)
 }
 void CharArrayPushBack(char*& array, char last)
 {
+	if (last == '\0')
+		return;
+
 	size_t arrayLength = (array != nullptr) ? strlen(array) : 0;
+
 	char* result = new char[arrayLength + 2];
-	if (array != nullptr)
-	{
-		strcpy_s(result, arrayLength + 1, array);
-		delete[] array;
-	}
 	result[arrayLength] = last;
 	result[arrayLength + 1] = '\0';
+
+	if (array != nullptr)
+	{
+		for (std::size_t i = 0; i < arrayLength - 1; ++i)
+			result[i] = array[i];
+
+		delete[] array;
+	}
 	array = result;
 }
 
@@ -259,17 +266,24 @@ std::string to_string(T n)
 	return OutputString;
 }
 template <typename T>
-char* to_char_pointer(T n)
+void to_char_pointer(char*& array,T n)
 {
-	char* OutputString=NULL;
+	char* OutputString=nullptr;
 	unsigned long long size=IntSize(n);
 	
-	OutputString=new char[size+1];
-	for(int i=0;i<size;i++)
-	OutputString[i]=NumberToChar(GetDigitRate(n,size-i-1));
+	OutputString=(char*)malloc(sizeof(char)*(size+1));
 	OutputString[size]='\0';
+
+	for(int i=0;i<size;i++)
+		OutputString[i]=NumberToChar(GetDigitRate(n,size-i-1));
 	
-	return OutputString;
+	if (OutputString != nullptr)
+	{
+		if (array != nullptr)
+			delete[] array;
+
+		array = OutputString;
+	}
 }
 char* StringToCharPoint(const std::string &String)
 {
