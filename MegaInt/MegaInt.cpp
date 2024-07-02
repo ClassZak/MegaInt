@@ -81,7 +81,7 @@ std::mutex printLock;
 
 bool gl_check = false;
 
-void Threads100()
+static void Threads100()
 {
 
 	std::string files[100];
@@ -242,17 +242,15 @@ void Threads100()
 int main()
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-	system("pause");
-
+	
 	while (true)
+	for (MegaInt i = 20; i != 1000; ++i)
 	{
-
-		for (MegaInt i = 0.; i != 1000; ++i)
-		{
-			MegaInt a = i/5*20+(MegaInt&)(i/7);
-			//std::cout << i <<std::endl;
-		}
+		MegaInt a = i/5*20+(MegaInt&)(i/7);
+		//std::cout << i <<std::endl;
 	}
+
+	system("pause");
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY-1);
 	std::cout << MegaInt::constructed << std::endl;

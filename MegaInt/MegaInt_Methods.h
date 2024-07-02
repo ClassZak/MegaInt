@@ -133,7 +133,7 @@ MegaInt MegaInt::DigitNumberMegaInt()
 unsigned long long MegaInt::DigitNumber() const
 {
 	if(length<=(unsigned long long)MAX_UNSIGNED_LONG_LONG/MAX_LIMIT_RATE_MEGAINT)
-	return length*MAX_LIMIT_RATE_MEGAINT;
+		return length*MAX_LIMIT_RATE_MEGAINT;
 	else
 	{
 		throw MegaInt::MegaIntException("Length is very long to show digit number in <unsigned long int> type");
@@ -144,24 +144,27 @@ MegaInt MegaInt::MegaIntModyl() const
 {
 	MegaInt n=*this;
 	if(negative)
-	n.negative=false;
+		n.negative=false;
+
 	return n;
 }
 bool MegaInt::IsRoundDigit(const unsigned long long StartPos)
 {
 	bool result=true;
 	for(unsigned long long i=StartPos;i<length;i++)
-	if(numbers[i]!=0)
-	{
-		result=false;
-		break;
-	}
+		if(numbers[i])
+		{
+			result=false;
+			break;
+		}
+
 	return result;
 }
 char*& MegaInt::GetCharArrayRecord() const
 {
 	char* returnArray = nullptr;
-	if (negative) {
+	if (negative)
+	{
 		returnArray = new char[2];
 		returnArray[0] = '-';
 		returnArray[1] = '\0';
@@ -196,7 +199,7 @@ char*& MegaInt::GetCharArrayRecord() const
 		}
 
 		char* numberString = to_char_pointer(numbers[i]);
-		if (!returnArray || returnArray[0] == '\0')
+		if (returnArray!=nullptr || returnArray[0] == '\0')
 		{
 			delete[] returnArray;
 			returnArray = numberString;
@@ -221,7 +224,8 @@ char*& MegaInt::GetCharArrayRecord() const
 MegaInt MegaInt::CharPointerToMegaInt(const char* InputString)
 {
 	MegaInt result=0;
-	char *array= (char*)"";
+	char *array= new char[1];
+	array[0] = '\0';
 	unsigned long long newlength=0;
 	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
 	{
@@ -260,18 +264,28 @@ MegaInt MegaInt::CharPointerToMegaInt(const char* InputString)
 		newarray[i]=array[i+1];
 		newarray[lastlength]='\0';
 		
-		delete[]array;
+		if (array != nullptr)
+			delete[] array;
 		array=newarray;
 	}
 	if(array=="")
 	{
 		result.negative=false;
+
+		if (array != nullptr)
+			delete[] array;
+
 		return result;
 	}
 	newlength=(unsigned long long)lastlength/(unsigned long long)(MAX_LIMIT_RATE_MEGAINT)
 	+bool(bool((lastlength%(MAX_LIMIT_RATE_MEGAINT))!=0)+bool(lastlength<MAX_LIMIT_RATE_MEGAINT));
-	if(!(newlength))
-	return result;
+	if (!newlength)
+	{
+		if (array != nullptr)
+			delete[] array;
+
+		return result;
+	}
 	else
 	{
 		unsigned long long *newnumbers=new unsigned long long[newlength-(array[0]=='-')];
@@ -289,17 +303,16 @@ MegaInt MegaInt::CharPointerToMegaInt(const char* InputString)
 		result.length=newlength;
 		delete [] result.numbers;
 		result.numbers=newnumbers;
+
+		if (array != nullptr)
+			delete[] array;
+
 		return result;
 	}
 }
 MegaInt MegaInt::StringToMegaInt(const std::string &InputString)
 {
-	char* array=new char[InputString.size()+1];
-	for(unsigned long long i=0;i<InputString.size();++i)
-	array[i]=InputString[i];
-	array[InputString.size()]='\0';
-	
-	return CharPointerToMegaInt(array);
+	return CharPointerToMegaInt(InputString.c_str());
 }
 unsigned long long MegaInt::GetConstructedTimes()
 {

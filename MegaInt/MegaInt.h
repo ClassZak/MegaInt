@@ -68,13 +68,11 @@
 
 class MegaInt;
 
-template <typename T>
-T IntSize(T n);
+unsigned long long IntSize(unsigned long long n);
 
 #include "MegaInt_Definetion.h"
 #include "MegInt_Exception.h"
-template <typename T>
-T CutNumber(T n,const short newsize);
+unsigned long long CutNumber(unsigned long long n,const short newsize);
 
 
 long long modyl(long long n);
@@ -119,17 +117,17 @@ bool IsRound(const T n);
 
 
 
-template <typename T>
-T CutNumber(T n,const short newsize)
+
+unsigned long long CutNumber(unsigned long long n,const short newsize)
 {
-	T returnnumber=0;
+	unsigned long long returnnumber=0;
 	for(short i=0;i<newsize;i++)
 	{
-		T curr=((T)(n/PowerTen(i))%10);
+		unsigned long long curr=((n/PowerTen(i))%10);
 		if(!i)
 		returnnumber=n%10;
 		else
-		returnnumber+=((T)(n/PowerTen(i))%10)*PowerTen(i);
+		returnnumber+=((n/PowerTen(i))%10)*PowerTen(i);
 	}
 	return returnnumber;
 }
@@ -217,16 +215,17 @@ unsigned long long find_in_chars(char* array,unsigned long long length,char elem
 	return i;
 	return 0;
 }
-template <typename T>
-T IntSize(T n)
+
+unsigned long long IntSize(unsigned long long n)
 {
-	T length=1;
+	unsigned long long length=1;
 	while(n>=10)
 	{
 		if(length==MAX_UNSIGNED_LONG_LONG)
-		throw MegaInt::MegaIntException("Length is more then max");
-		length++;
-		n=(unsigned long long)n/10;
+			throw MegaInt::MegaIntException("Length is more then max");
+
+		++length;
+		n/=10;
 	}
 	return length;
 }

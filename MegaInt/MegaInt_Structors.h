@@ -17,7 +17,7 @@ MegaInt::MegaInt(const MegaInt &other)
 	this->numbers[i]=other.numbers[i];
 	++constructed;
 }
-#pragma region Numbers constructors
+#pragma region Constructors for scalar types
 MegaInt::MegaInt(long long n)
 {
 	long long nmodyl=modyl(n);
@@ -29,7 +29,7 @@ MegaInt::MegaInt(long long n)
 	
 	if(nmodyl>=MAX_LIMIT_MEGAINT)
 	{
-		++length;
+		length=2;
 		unsigned long long *newnumbers=new unsigned long long[length];
 		newnumbers[1]=CutNumber((unsigned long long)nmodyl,MAX_LIMIT_RATE_MEGAINT);
 		newnumbers[0]=(nmodyl)/PowerTen(MAX_LIMIT_RATE_MEGAINT);
@@ -49,7 +49,7 @@ MegaInt::MegaInt(unsigned long long n)
 	{
 		++length;
 		unsigned long long* newnumbers = new unsigned long long[length];
-		newnumbers[1] = CutNumber((unsigned long long)n, MAX_LIMIT_RATE_MEGAINT);
+		newnumbers[1] = CutNumber(n, MAX_LIMIT_RATE_MEGAINT);
 		newnumbers[0] = (n) / PowerTen(MAX_LIMIT_RATE_MEGAINT);
 		delete[] numbers;
 		numbers = newnumbers;
@@ -99,167 +99,9 @@ MegaInt::MegaInt(double n)
 {
 }
 #pragma endregion
-MegaInt::MegaInt(char* InputString) : MegaInt::MegaInt()
-{
-	*this=(long long)0;
-	char* array = new char[1];
-	array[0] = '\0';
-	unsigned long long newlength=0;
-	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
-	{
-		if((InputString[i]>='0' and InputString[i]<='9') or ((!newlength)and(InputString[i]=='-')))
-		{
-			if(InputString[i]=='0')
-			{
-				if(newlength>2)
-				{
-					CharArrayPushBack(array,'0');
-					++newlength;
-				}
-				else
-				{
-					if((newlength-(array[0]=='-'))>=1)
-					{
-						CharArrayPushBack(array,'0');
-						++newlength;
-					}	
-				}
-			}
-			else
-			{
-				CharArrayPushBack(array,InputString[i]);
-				++newlength;
-			}
-		}
-	}
-	
-	unsigned long long lastlength=newlength;
-	if(array[0]=='-')
-	{
-		negative=true;
-		--lastlength;
-		char *newarray=new char[lastlength+1];
-		for(unsigned long long i=0;i<lastlength;++i)
-		newarray[i]=array[i+1];
-		newarray[lastlength]='\0';
-		
-		delete[]array;
-		array=newarray;
-	}
-	if(array=="")
-	{
-		negative=false;
-	}
-	else
-	{
-		newlength=(unsigned long long)lastlength/(unsigned long long)(MAX_LIMIT_RATE_MEGAINT)
-		+bool(((lastlength%(MAX_LIMIT_RATE_MEGAINT))!=0)or(lastlength<MAX_LIMIT_RATE_MEGAINT));
-		if(!(newlength))
-		{
-		}
-		else
-		{
-			unsigned long long *newnumbers=new unsigned long long[newlength];
-			for(unsigned long long i=0;i<newlength;++i)
-			{
-				unsigned long long curr=0;
-				for(unsigned long long j=0;j<MAX_LIMIT_RATE_MEGAINT;++j)
-				{
-					if((lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i)==MAX_UNSIGNED_LONG_LONG)
-					break;
-					curr+=(unsigned long long)((short)(array[lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i]-'0'))
-					*PowerTen(j);
-				}
-				newnumbers[newlength-i-1]=curr;
-			}
-			length=newlength;
-			delete[] numbers;
-			numbers=newnumbers;
-		}
-	}
-	if (array != nullptr)
-		delete[] array;
-}
 MegaInt::MegaInt(const char* InputString) : MegaInt::MegaInt()
 {
-	*this=(long long)0;
-	char* array = new char[1];
-	array[0] = '\0';
-
-	unsigned long long newlength=0;
-	for(unsigned long long i=0;i<GetCharArrayLength(InputString);++i)
-	{
-		if((InputString[i]>='0' and InputString[i]<='9') or ((!newlength)and(InputString[i]=='-')))
-		{
-			if(InputString[i]=='0')
-			{
-				if(newlength>2)
-				{
-					CharArrayPushBack(array,'0');
-					++newlength;
-				}
-				else
-				{
-					if((newlength-(array[0]=='-'))>=1)
-					{
-						CharArrayPushBack(array,'0');
-						++newlength;
-					}	
-				}
-			}
-			else
-			{
-				CharArrayPushBack(array,InputString[i]);
-				++newlength;
-			}
-		}
-	}
-	unsigned long long lastlength=newlength;
-	if(array[0]=='-')
-	{
-		negative=true;
-		--lastlength;
-		char*newarray=new char[lastlength+1];
-		for(unsigned long long i=0;i<lastlength;++i)
-		newarray[i]=array[i+1];
-		newarray[lastlength]='\0';
-		
-		delete[]array;
-		array=newarray;
-	}
-	if(array=="")
-	{
-		negative=false;
-	}
-	else
-	{
-		newlength=(unsigned long long)lastlength/(unsigned long long)(MAX_LIMIT_RATE_MEGAINT)
-		+bool(((lastlength%(MAX_LIMIT_RATE_MEGAINT))!=0)or(lastlength<MAX_LIMIT_RATE_MEGAINT));
-		if(!(newlength))
-		{
-		}
-		else
-		{
-			unsigned long long *newnumbers=new unsigned long long[newlength];
-			for(unsigned long long i=0;i<newlength;++i)
-			{
-				unsigned long long curr=0;
-				for(unsigned long long j=0;j<MAX_LIMIT_RATE_MEGAINT;++j)
-				{
-					if((lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i)==MAX_UNSIGNED_LONG_LONG)
-					break;
-					curr+=(unsigned long long)((short)(array[lastlength-i*MAX_LIMIT_RATE_MEGAINT-j+i]-'0'))
-					*PowerTen(j);
-				}
-				newnumbers[newlength-i-1]=curr;
-			}
-			length=newlength;
-			delete[] numbers;
-			numbers=newnumbers;
-		}
-	}
-	if (array != nullptr)
-		delete[] array;
+	*this=CharPointerToMegaInt(InputString);
 }
 //Destructor
 MegaInt::~MegaInt()

@@ -45,7 +45,6 @@ public:
 	MegaInt();
 	MegaInt(const MegaInt &other);
 	MegaInt(const char* InputString);
-	MegaInt(char* InputString);
 	MegaInt(long long n);
 	MegaInt(unsigned long long n);
 
