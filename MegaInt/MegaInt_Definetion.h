@@ -165,7 +165,14 @@ std::ostream& operator<<(std::ostream& os,const MegaInt& MI)
 	char* returnchar = MI.GetCharArrayRecord();
 	os << returnchar;
 	if(returnchar != nullptr)
-		delete[] returnchar;
+		try
+		{
+			delete[] returnchar;
+		}
+		catch (const std::exception&)
+		{
+		}
+
 	return os;
 }
 std::istream& operator>>(std::istream& in, MegaInt& MI)

@@ -71,7 +71,7 @@
 //#define MEGAINT_DEBUG
 //#define DIVISION_DEBUG
 #include "MegaInt.h"
-#define BORDER 10000
+#define BORDER 1000
 #include <fstream>
 #include <thread>
 #include <mutex>
@@ -79,7 +79,8 @@
 
 std::mutex printLock;
 
-bool gl_check = false;
+
+static unsigned Progress = 0;
 
 static void Threads100()
 {
@@ -92,42 +93,57 @@ static void Threads100()
 		files[i] += ".txt";
 	}
 
-	system("pause");
+	//system("pause");
 
 	std::function<void()> tests[100];
 	for (short I_ = 0; I_ < 100; ++I_)
 	{
 		tests[I_] = [files, I_]()
 			{
-				std::ofstream file;
-				file.open(StringToCharPoint(files[I_]));
+				std::ofstream file(files[I_]);
+
 				for (long long i = BORDER / 100 * I_; i < BORDER / 100 * (I_ + 1); ++i)
 				{
 					printLock.lock();
-					std::cout << "s=" << BORDER / 100 * I_ << std::endl;
-					std::cout << "i=" << i << std::endl << std::endl;
+					std::cout << "s=" << BORDER / 100 * I_ << '\n';
+					std::cout << "i=" << -(BORDER / 100 * I_-i) <<'/'<< BORDER / 100
+							  <<'\t' << round((double)-(BORDER / 100 * I_ - i) / (double)BORDER *100* 100.)<<'%'
+							  << "\n\n";
 					printLock.unlock();
 					MegaInt m = i;
 					for (long long j = -BORDER; j < BORDER; ++j)
 					{
 						if (j == 0)
 							continue;
-						if (gl_check)
-							return 0;
 						MegaInt n = j;
+
 						if ((m / n) != (i / j))
+						try
 						{
-							SetConsoleCP(1251);
-							file << "m=\t" << m << "\tn=\t" << n << "\tm/n=\t" << m / n << "\ti/j=\t" << i / j << std::endl;
-							SetConsoleCP(868);
+							file << std::string("m=\t") + m.GetCharArrayRecord() + "\tn=\t" +
+								n.GetCharArrayRecord() +
+								"\tm/n=\t" +
+								(m / n).GetCharArrayRecord() +
+								"\ti/j=\t" + std::to_string(i / j)<<'\n';
+						}
+						catch (const std::exception&)
+						{
 						}
 					}
 				}
+
 				file.close();
+
+				printLock.lock();
+				std::cout << "s=" << BORDER / 100 * I_ << "\tfinished" << std::endl;
+				std::cout << "Progress:\t" << ++Progress<<'%'<<std::endl<<std::endl;
+				printLock.unlock();
 			};
 	}
+	for (short i = 0; i != 100; ++i)
+		tests[i]();
 
-
+	/*
 	std::thread Testing[100] =
 	{
 		std::thread(tests[0]),
@@ -235,27 +251,13 @@ static void Threads100()
 	for (short i = 0; i < 100; ++i)
 	{
 		Testing[i].join();
-	}
+	}*/
 }
 
 
 int main()
 {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN);
-	
-	while (true)
-	for (MegaInt i = 20; i != 1000; ++i)
-	{
-		MegaInt a = 0;
-		a=i / 5 * 20 + (MegaInt&)((i / 7)*(MegaInt&)(i%12));
-		//std::cout << i <<std::endl;
-	}
-
-	system("pause");
-
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY-1);
-	std::cout << MegaInt::constructed << std::endl;
-	std::cout << MegaInt::destructed << std::endl;
+	Threads100();
 
 	system("pause");
 }
